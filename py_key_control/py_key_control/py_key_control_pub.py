@@ -17,6 +17,11 @@ class ControlPublisher(Node):
 		self.declare_parameter('move_back_key', 'k')
 		self.declare_parameter('turn_left_key', 'j')
 		self.declare_parameter('turn_right_key', 'l')
+		print("Ready\n Use:")
+		print("- '" + self.get_parameter('move_forward_key').get_parameter_value().string_value + "' to move forward\n")
+		print("- '" + self.get_parameter('move_back_key').get_parameter_value().string_value + "' to move back\n")
+		print("- '" + self.get_parameter('turn_left_key').get_parameter_value().string_value + "' to turn left\n")
+		print("- '" + self.get_parameter('turn_right_key').get_parameter_value().string_value + "' to turn right\n")
 
 	def key_control(self):
 		twist = Twist()
@@ -54,8 +59,6 @@ def main(args = None):
 	rclpy.init(args=args)
 
 	control_publisher = ControlPublisher()
-
-	print("ready")
 
 	rclpy.spin(control_publisher)
 
