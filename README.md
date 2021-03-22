@@ -2,4 +2,4 @@
 Kacper Bugała
 Jan Kuc
 
-[WIKI](https://github.com/pw-eiti-anro-21l/bugala_kuc.wiki.git)
+[WIKI](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/home)
