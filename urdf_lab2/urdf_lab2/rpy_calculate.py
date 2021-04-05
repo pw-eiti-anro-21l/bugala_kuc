@@ -1,18 +1,23 @@
 import csv
-import math
+from math import cos, sin, atan2
+import math 
 import os
 from matrix import matrix_multiplier
 
 def csv_reader(filename):
 	dh = []
 	with open(filename, 'r') as file:
-		read_file = csv.reader(file)
+		read_file = csv.reader(file, delimiter = ';')
 		for row in read_file:
 			dh.append(row)
 	return dh
 
-def rotation_matrix_calc(dh, filename):
+def rotation_matrix_calc(filename):
 	dh = csv_reader(filename)
+	for i in range(1, 3):
+		for j in range(1, 4):
+			dh[i][j] = float(dh[i][j])
+
 	h01 = [[cos(dh[1][4]), -sin(dh[1][4])*cos(dh[1][3]), sin(dh[1][4])*sin(dh[1][3]), dh[1][1]*cos(dh[1][4])],
 		   [sin(dh[1][4]), cos(dh[1][4])*cos(dh[1][3]), -cos(dh[1][4])*sin(dh[1][3]), dh[1][1]*sin(dh[1][4])],
 		   [0, sin(dh[1][3]), cos(dh[1][3]), dh[1][2]],
@@ -34,3 +39,8 @@ def find_rpy(r):
 	pitch = atan2(-r[3][1], sqrt(r[3][2]*r[3][2] + r[3][3]*r[3][3]))
 	yaw = atan2(r[2][1], r[1][1])
 	return [roll, pitch, yaw]
+
+if __name__ == '__main__':
+	#print(csv_reader('dh_table.csv'))
+	r = rotation_matrix_calc('dh_table.csv')
+	print(find_rpy(r))
