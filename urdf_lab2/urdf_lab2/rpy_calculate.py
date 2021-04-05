@@ -1,5 +1,5 @@
 import csv
-import math
+from math import cos, sin, atan2
 import os
 from matrix import matrix_multiplier
 
