@@ -26,17 +26,15 @@ def matrix_multiplier(a, b):
 # 	H.append(last_row)
 
 # 	return H
-
-
-# if __name__ == '__main__':
-# 	print('a')
-# 	a = [[1,2,4],
-# 	[3,4,6]]
-
-# 	b = [1,4]
 	
-# 	c = merge_matrices(a,b)
-# 	print(c)
-# 	print('a')
 
+if __name__ == '__main__':
+	print('a')
+	a = [[1,2,4],
+	[3,4,6]]
 
+	b = [1,4]
+	
+	c = merge_matrices(a,b)
+	print(c)
+	print('a')
