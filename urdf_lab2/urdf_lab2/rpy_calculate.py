@@ -34,12 +34,13 @@ def rotation_matrix_calc(filename):
 		   [0, 0, 0, 1]]
 	h12 = matrix_multiplier(h01, h02)
 	h123 = matrix_multiplier(h12, h03)
+	#print(h123)
 	return h123
 
 def find_rpy(r):
-	roll = atan2(r[3][2], r[3][3])
-	pitch = atan2(-r[3][1], sqrt(r[3][2]*r[3][2] + r[3][3]*r[3][3]))
-	yaw = atan2(r[2][1], r[1][1])
+	roll = atan2(r[2][1], r[2][2])
+	pitch = atan2(-r[2][0], sqrt(r[2][1]*r[2][1] + r[2][2]*r[2][2]))
+	yaw = atan2(r[1][0], r[0][0])
 	return [roll, pitch, yaw]
 
 if __name__ == '__main__':
