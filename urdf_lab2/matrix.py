@@ -17,13 +17,12 @@ def matrix_multiplier(a, b):
 				c[row][column] += a[row][i]*b[i][column] 
 	return c
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-	a = [[1,2,4],
-		 [3,4,6]]
+# 	a = [[1,2,4],
+# 	[3,4,6]]
 
-	b = [
-		 [1,4],
-		 [2,7]]
-	c = matrix_multiplier(a,b)
-	print(c)
+# 	b = [[1,4],
+# 	[2,7]]
+# 	c = matrix_multiplier(a,b)
+# 	print(c)
