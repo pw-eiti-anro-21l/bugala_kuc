@@ -1,5 +1,5 @@
 import csv
-from math import cos, sin, atan2
+from math import cos, sin, atan2, sqrt
 import os
 from matrix import matrix_multiplier
 
@@ -9,6 +9,9 @@ def csv_reader(filename):
 		read_file = csv.reader(file, delimiter = ';')
 		for row in read_file:
 			dh.append(row)
+	for i in range(1, 4):
+		for j in range(1, 5):
+			dh[i][j] = float(dh[i][j])
 	return dh
 
 def rotation_matrix_calc(filename):
