@@ -1,0 +1,22 @@
+<link name="dupa">
+  <inertial>
+    <mass value="1"/>
+    <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100"/>
+    <origin/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="1.57 0 0"/>
+    <geometry>
+      <cylinder radius="0.01" length=".5"/>
+      <cylinder radius="0.01" length=".5"/>
+    </geometry>
+    <material name="gray">
+      <color rgba=".2 .2 .2 1"/>
+    </material>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="1.57 0 0"/>
+    <geometry/>
+    <contact_cofficients mu="0" kp="1000.0" kd="1.0"/>
+  </collision>
+</link>
