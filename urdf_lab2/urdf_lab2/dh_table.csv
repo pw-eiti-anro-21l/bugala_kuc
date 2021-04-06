@@ -1,4 +1,4 @@
-i;a;d;alpha;phi;link
-1;0;0;0;180;base
-2;0;0;-1.57;-90;arm1
-3;5;0;0;90;arm2
+i;a;d;alpha;phi;part
+row1;0;0;0;3.14;joint1
+row2;0;0;-1.57;3.14;joint2
+row3;5;0;0;3.14;joint3
