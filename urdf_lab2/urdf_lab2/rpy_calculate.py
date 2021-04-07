@@ -49,7 +49,7 @@ def link_xml_creator():
 	link = ET.Element('link', name = link_name)
 	inertial = ET.SubElement(link, 'inertial')
 	mass = ET.SubElement(inertial, 'mass', value = "1") 
-	inertia = ET.SubElement(inertial, 'inertia', ixx="100", ixy="0", ixz="0", iyy="100", iyz="0", izz="100")
+	inertial = ET.SubElement(inertial, 'inertia', ixx="100", ixy="0", ixz="0", iyy="100", iyz="0", izz="100")
 	origin = ET.SubElement(inertial, "origin")
 	visual = ET.SubElement(link, "visual")
 	visual_origin = ET.SubElement(visual, "origin", xyz="0 0 0", rpy="1.57 0 0")
