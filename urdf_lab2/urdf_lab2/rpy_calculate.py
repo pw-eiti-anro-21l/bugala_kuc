@@ -66,36 +66,52 @@ def link_xml_creator():
 	# tree.write('robot_lab2.urdf.xml', pretty_print=True)
 	return link
 
-
+# def joint_xml_creator(joint_name, parent_name, child_name, origin_rpy, axis = None, limit_att = None):
 def joint_xml_creator():
-    joint_name = "tilt"
-    joint_type = "revolute"
-    parent_link = "axis"
-    child_link = "body"
-    origin_xyz = "0 0 0"
-    origin_rpy = "1.57 0 0"
-    axis_xyz = "0 1 0"
-    upper_limit = "0"
-    lower_limit = "-0.5"
-    effort_limit = "10"
-    velocity_limit = "10"
+	joint_name = "joint_name"
+	parent_name = "parent_name"
+	child_name = "child_name"
+	origin_rpy = "0 0 0"
 
-    joint = ET.Element('joint', name = joint_name, type = joint_type)
-    parent = ET.SubElement(joint, 'parent', link = parent_link)
-    child = ET.SubElement(joint, 'child', link = child_link)
-    origin = ET.SubElement(joint, 'origin', xyz = origin_xyz, rpy = origin_rpy)
-    axis = ET.SubElement(joint, 'axis', xyz = axis_xyz)
-    limit = ET.SubElement(joint, 'limit', upper = upper_limit, lower = lower_limit, effort = effort_limit, velocity = velocity_limit)
-    # tree = ET.ElementTree(joint)
-    # tree.write('robot_lab2.urdf.xml', pretty_print=True)
-    return joint
+	joint = ET.Element('joint', name = joint_name, type = 'fixed')
+	parent = ET.SubElement(joint, 'parent', link = parent_name)
+	child = ET.SubElement(joint, 'child', link = child_name)
+	origin = ET.SubElement(joint, 'origin', rpy = origin_rpy)
+	# axis = ET.SubElement(joint, 'axis', axis = axis)
+	# limit = ET.SubElement(joint, 'limit', lower = limit_att[0], upper = limit_att[1], effort = limit_att[2], velocity = limit_att[3])
+	tree = ET.ElementTree(joint)
+	tree.write('robot_lab2_joint.urdf.xml', pretty_print=True)
+	return joint
+
+# def joint_xml_creator():
+#     joint_name = "tilt"
+#     joint_type = "revolute"
+#     parent_link = "axis"
+#     child_link = "body"
+#     origin_xyz = "0 0 0"
+#     origin_rpy = "1.57 0 0"
+#     axis_xyz = "0 1 0"
+#     upper_limit = "0"
+#     lower_limit = "-0.5"
+#     effort_limit = "10"
+#     velocity_limit = "10"
+
+#     joint = ET.Element('joint', name = joint_name, type = joint_type)
+#     parent = ET.SubElement(joint, 'parent', link = parent_link)
+#     child = ET.SubElement(joint, 'child', link = child_link)
+#     origin = ET.SubElement(joint, 'origin', xyz = origin_xyz, rpy = origin_rpy)
+#     axis = ET.SubElement(joint, 'axis', xyz = axis_xyz)
+#     limit = ET.SubElement(joint, 'limit', upper = upper_limit, lower = lower_limit, effort = effort_limit, velocity = velocity_limit)
+#     # tree = ET.ElementTree(joint)
+#     # tree.write('robot_lab2.urdf.xml', pretty_print=True)
+#     return joint
 
 def xacro_prop_xml():
 	prop = ET.Element('xacro:property', name="params", value="${load_yaml('urdf_params.yaml')}")
 	return prop
 
 def urdf_xml_writer():
-	dh = csv_reader(filename)
+	dh = csv_reader('dh_table.csv')
 	rows = len(dh)
 	columns = len(dh[0])
 	tree = ET.Element("robot", name="robot_bugkuc", xacro="http://www.ros.org/wiki/xacro")
@@ -110,5 +126,5 @@ if __name__ == '__main__':
 	#print(csv_reader('dh_table.csv'))
 	# r = rotation_matrix_calc('dh_table.csv')
 	# print(find_rpy(r))
-	#urdf_xml_writer()
+	urdf_xml_writer()
 	generate_yaml_params('dh_table.csv')
