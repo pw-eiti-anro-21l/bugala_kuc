@@ -4,6 +4,7 @@ import os
 from matrix import matrix_multiplier
 #import xml.etree.ElementTree as ET
 from lxml import etree as ET
+import transformations
 
 def csv_reader(filename):
 	dh = []
@@ -16,108 +17,115 @@ def csv_reader(filename):
 	for i in range(1, rows):
 		for j in range(1, columns-1):
 			dh[i][j] = float(dh[i][j])
+	dh.pop(0)
 	return dh
 
-def generate_yaml_params(filename):
+# i a d alpha theta part
+# 0 1 2 3     4     5
+def find_rpy(filename):
 	dh = csv_reader(filename)
+	print(dh)
 	rows = len(dh)
 	columns = len(dh[0])
+	rpy_table = []
+	xyz_table = []
 	file = open('urdf_params.yaml', 'w')
-	for row in range(1, rows):
-		h = [[cos(dh[row][4]), -sin(dh[row][4])*cos(dh[row][3]), sin(dh[row][4])*sin(dh[row][3]), dh[row][1]*cos(dh[row][4])],
-			   [sin(dh[row][4]), cos(dh[row][4])*cos(dh[row][3]), -cos(dh[row][4])*sin(dh[row][3]), dh[row][1]*sin(dh[row][4])],
-			   [0, sin(dh[row][3]), cos(dh[row][3]), dh[row][2]],
-			   [0, 0, 0, 1]]
-		[roll, pitch, yaw] = find_rpy(h)
-		print([roll, pitch, yaw])
-		file.write(dh[row][0] +":\n")
-		file.write(" joint_xyz: "+str(0)+" "+str(0)+" "+str(0)+"\n")
-		file.write(" joint_rpy: "+str(roll)+" "+str(pitch)+" "+str(yaw)+"\n")
-		file.write(" link_xyz: "+str(0)+" "+str(0)+" "+str(float(dh[row][2]*(-0.5)))+"\n")
-		file.write(" link_rpy: "+str(0)+" "+str(0)+" "+str(0)+"\n")
-		file.write(" link_len: "+str(dh[row][2])+"\n")
+	for row in range(0, rows):
+		rot_theta = transformations.rotation_matrix(dh[row][4], (0,0,1))
+		rot_alpha = transformations.rotation_matrix(dh[row][3], (1,0,0))
+		trans_a = transformations.translation_matrix((dh[row][1],0,0))
+		trans_d = transformations.translation_matrix((0,0,dh[row][2]))
+		h_matrix = rot_theta @ trans_d @ trans_a @ rot_alpha
+		rpy_table.append(transformations.euler_from_matrix(h_matrix))
+		xyz_table.append(transformations.translation_from_matrix(h_matrix))
+	return rpy_table, xyz_table
+
+		# h = [[cos(dh[row][4]), -sin(dh[row][4])*cos(dh[row][3]), sin(dh[row][4])*sin(dh[row][3]), dh[row][1]*cos(dh[row][4])],
+		# 	   [sin(dh[row][4]), cos(dh[row][4])*cos(dh[row][3]), -cos(dh[row][4])*sin(dh[row][3]), dh[row][1]*sin(dh[row][4])],
+		# 	   [0, sin(dh[row][3]), cos(dh[row][3]), dh[row][2]],
+		# 	   [0, 0, 0, 1]]
+		# [roll, pitch, yaw] = find_rpy(h)
+		# print([roll, pitch, yaw])
+		# file.write(dh[row][0] +":\n")
+		# file.write(" joint_xyz: "+str(0)+" "+str(0)+" "+str(0)+"\n")
+		# file.write(" joint_rpy: "+str(roll)+" "+str(pitch)+" "+str(yaw)+"\n")
+		# file.write(" link_xyz: "+str(0)+" "+str(0)+" "+str(float(dh[row][2]*(-0.5)))+"\n")
+		# file.write(" link_rpy: "+str(0)+" "+str(0)+" "+str(0)+"\n")
+		# file.write(" link_len: "+str(dh[row][2])+"\n")
 
 
-def find_rpy(r):
-	roll = atan2(r[2][1], r[2][2])
-	pitch = atan2(-r[2][0], sqrt(r[2][1]*r[2][1] + r[2][2]*r[2][2]))
-	yaw = atan2(r[1][0], r[0][0])
-	return [roll, pitch, yaw]
+# def find_rpy(r):
+# 	roll = atan2(r[2][1], r[2][2])
+# 	pitch = atan2(-r[2][0], sqrt(r[2][1]*r[2][1] + r[2][2]*r[2][2]))
+# 	yaw = atan2(r[1][0], r[0][0])
+# 	return [roll, pitch, yaw]
 
-def link_xml_creator():
-	link_name = "dupa"
+def link_xml_creator(link_name, mass, geo_type, radius, length, rpy=[0, 0, 0], xyz=[0, 0, 0]):
+	rpy = f'{rpy[0]} {rpy[1]} {rpy[2]}'
+	xyz = f'{xyz[0]} {xyz[1]} {xyz[2]}'
 	link = ET.Element('link', name = link_name)
 	inertial = ET.SubElement(link, 'inertial')
-	mass = ET.SubElement(inertial, 'mass', value = "1") 
+	mass = ET.SubElement(inertial, 'mass', value = mass) 
 	inertial = ET.SubElement(inertial, 'inertia', ixx="100", ixy="0", ixz="0", iyy="100", iyz="0", izz="100")
 	origin = ET.SubElement(inertial, "origin")
 	visual = ET.SubElement(link, "visual")
-	visual_origin = ET.SubElement(visual, "origin", xyz="0 0 0", rpy="1.57 0 0")
+	visual_origin = ET.SubElement(visual, "origin", xyz=xyz, rpy=rpy)
 	geometry = ET.SubElement(visual, "geometry")
-	cylinder = ET.SubElement(geometry, "cylinder", radius="0.01", length=".5")
+	geometry_type = ET.SubElement(geometry, geo_type, radius=radius, length=length)
 	material = ET.SubElement(visual, "material", name="gray")
 	color = ET.SubElement(material, "color", rgba=".2 .2 .2 1")
 	collision = ET.SubElement(link, "collision")
-	collision_origin = ET.SubElement(collision, "origin", xyz="0 0 0", rpy="1.57 0 0")
+	collision_origin = ET.SubElement(collision, "origin", xyz=xyz, rpy=rpy)
 	collision_geometry = ET.SubElement(collision, "geometry")
-	collision_cylinder = ET.SubElement(geometry, "cylinder", radius="0.01", length=".5")
+	collision_cylinder = ET.SubElement(geometry, "cylinder", radius=radius, length=length)
 	contact_cofficients = ET.SubElement(collision, "contact_cofficients", mu="0", kp="1000.0", kd="1.0")
 	# tree = ET.ElementTree(link)
 	# tree.write('robot_lab2.urdf.xml', pretty_print=True)
 	return link
 
 # def joint_xml_creator(joint_name, parent_name, child_name, origin_rpy, axis = None, limit_att = None):
-def joint_xml_creator():
-	joint_name = "joint_name"
-	parent_name = "parent_name"
-	child_name = "child_name"
-	origin_rpy = "0 0 0"
-
-	joint = ET.Element('joint', name = joint_name, type = 'fixed')
+def joint_xml_creator(joint_name, joint_type, parent_name, child_name, origin_xyz, origin_rpy, limit_att = None, axis = None):
+	rpy = f'{origin_rpy[0]} {origin_rpy[1]} {origin_rpy[2]}'
+	xyz = f'{origin_xyz[0]} {origin_xyz[1]} {origin_xyz[2]}'
+	joint = ET.Element('joint', name = joint_name, type = joint_type)
 	parent = ET.SubElement(joint, 'parent', link = parent_name)
 	child = ET.SubElement(joint, 'child', link = child_name)
-	origin = ET.SubElement(joint, 'origin', rpy = origin_rpy)
-	# axis = ET.SubElement(joint, 'axis', axis = axis)
-	# limit = ET.SubElement(joint, 'limit', lower = limit_att[0], upper = limit_att[1], effort = limit_att[2], velocity = limit_att[3])
-	tree = ET.ElementTree(joint)
-	tree.write('robot_lab2_joint.urdf.xml', pretty_print=True)
+	origin = ET.SubElement(joint, 'origin', xyz=xyz,rpy = rpy)
+	if joint_type != 'fixed':
+		axis = ET.SubElement(joint, 'axis', axis = axis)
+		limit = ET.SubElement(joint, 'limit', lower = limit_att[0], upper = limit_att[1], effort = limit_att[2], velocity = limit_att[3])
+	# tree = ET.ElementTree(joint)
+	# tree.write('robot_lab2_joint.urdf.xml', pretty_print=True)
 	return joint
 
-# def joint_xml_creator():
-#     joint_name = "tilt"
-#     joint_type = "revolute"
-#     parent_link = "axis"
-#     child_link = "body"
-#     origin_xyz = "0 0 0"
-#     origin_rpy = "1.57 0 0"
-#     axis_xyz = "0 1 0"
-#     upper_limit = "0"
-#     lower_limit = "-0.5"
-#     effort_limit = "10"
-#     velocity_limit = "10"
-
-#     joint = ET.Element('joint', name = joint_name, type = joint_type)
-#     parent = ET.SubElement(joint, 'parent', link = parent_link)
-#     child = ET.SubElement(joint, 'child', link = child_link)
-#     origin = ET.SubElement(joint, 'origin', xyz = origin_xyz, rpy = origin_rpy)
-#     axis = ET.SubElement(joint, 'axis', xyz = axis_xyz)
-#     limit = ET.SubElement(joint, 'limit', upper = upper_limit, lower = lower_limit, effort = effort_limit, velocity = velocity_limit)
-#     # tree = ET.ElementTree(joint)
-#     # tree.write('robot_lab2.urdf.xml', pretty_print=True)
-#     return joint
 
 def xacro_prop_xml():
 	prop = ET.Element('xacro:property', name="params", value="${load_yaml('urdf_params.yaml')}")
 	return prop
 
-def urdf_xml_writer():
-	dh = csv_reader('dh_table.csv')
+def urdf_xml_writer(filename):
+	dh = csv_reader(filename)
 	rows = len(dh)
+	print('Number of rows: ' + str(rows))
 	columns = len(dh[0])
-	tree = ET.Element("robot", name="robot_bugkuc", xacro="http://www.ros.org/wiki/xacro")
-	prop = xacro_prop_xml()
-	base = link_xml_creator()
-	tree.extend([link, joint])
+	tree = ET.Element("robot", name="robot_bugkuc")
+	base = link_xml_creator("base", "5", "cylinder", ".05", ".05")
+	tool = link_xml_creator("tool", ".5", "cylinder", ".0.05", "0.01")
+	parts_array = [base]
+	rpy, xyz = find_rpy(filename)
+	print(xyz)
+	print(rpy)
+	for i in range(rows):
+		if i == 0:
+			parent_name = 'base'
+		else:
+			parent_name = f'link_{i}'
+		next_joint = joint_xml_creator(str(dh[i][5]), 'fixed', parent_name, f'link_{i+1}', xyz[i], rpy[i] )			
+		next_link = link_xml_creator(f'link_{i+1}', f'1', f'cylinder', f'0.04',f'{dh[i][1]}', rpy[i], xyz[i])
+		parts_array.extend((next_joint, next_link))
+
+	parts_array.append(tool)
+	tree.extend(parts_array)
 	ET.ElementTree(tree).write('robot_lab2.urdf.xml', pretty_print=True)
 
 	
@@ -126,5 +134,4 @@ if __name__ == '__main__':
 	#print(csv_reader('dh_table.csv'))
 	# r = rotation_matrix_calc('dh_table.csv')
 	# print(find_rpy(r))
-	urdf_xml_writer()
-	generate_yaml_params('dh_table.csv')
+	urdf_xml_writer('dh_table.csv')
