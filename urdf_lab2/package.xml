@@ -3,9 +3,9 @@
 <package format="3">
   <name>urdf_lab2</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>description</description>
   <maintainer email="janekkuc00@gmail.com">jan</maintainer>
-  <license>TODO: License declaration</license>
+  <license>License</license>
 
   <depend>rclpy</depend>
 
