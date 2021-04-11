@@ -1,0 +1,4 @@
+<launch>
+        <param name="robot_description" command="cat $urdf_lab2/robot_lab2_fixed.urdf.xml" />
+        <node name="state_publisher" pkg="state_publisher" type="state_publisher" />           
+</launch>

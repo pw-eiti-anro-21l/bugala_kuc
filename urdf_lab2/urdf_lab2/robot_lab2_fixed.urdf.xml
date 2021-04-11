@@ -10,7 +10,7 @@
       </material>
     </visual>
   </link>
-  <joint name="joint_0_1" type="revolute">
+  <joint name="joint_0_1" type="fixed">
     <parent link="base"/>
     <child link="link_1"/>
     <origin xyz="0.0 0.0 0.1" rpy="0.0 -0.0 0.0"/>
@@ -28,7 +28,7 @@
       </material>
     </visual>
   </link>
-  <joint name="joint_1_2" type="revolute">
+  <joint name="joint_1_2" type="fixed">
     <parent link="link_1"/>
     <child link="link_2"/>
     <origin xyz="0.0 0.0 0.0" rpy="-1.57 -0.0 0.0"/>
@@ -46,7 +46,7 @@
       </material>
     </visual>
   </link>
-  <joint name="joint_2_tool" type="revolute">
+  <joint name="joint_2_tool" type="fixed">
     <parent link="link_2"/>
     <child link="tool"/>
     <origin xyz="0.5 0.0 0.0" rpy="0.0 -0.0 0.0"/>

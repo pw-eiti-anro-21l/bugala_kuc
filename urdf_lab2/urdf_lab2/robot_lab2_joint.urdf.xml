@@ -1,5 +1,0 @@
-<joint name="joint_name" type="fixed">
-  <parent link="parent_name"/>
-  <child link="child_name"/>
-  <origin rpy="0 0 0"/>
-</joint>

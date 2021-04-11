@@ -47,65 +47,36 @@ def find_rpy(filename):
 		xyz_table.append(transformations.translation_from_matrix(h_matrix))
 	return rpy_table, xyz_table
 
-		# h = [[cos(dh[row][4]), -sin(dh[row][4])*cos(dh[row][3]), sin(dh[row][4])*sin(dh[row][3]), dh[row][1]*cos(dh[row][4])],
-		# 	   [sin(dh[row][4]), cos(dh[row][4])*cos(dh[row][3]), -cos(dh[row][4])*sin(dh[row][3]), dh[row][1]*sin(dh[row][4])],
-		# 	   [0, sin(dh[row][3]), cos(dh[row][3]), dh[row][2]],
-		# 	   [0, 0, 0, 1]]
-		# [roll, pitch, yaw] = find_rpy(h)
-		# print([roll, pitch, yaw])
-		# file.write(dh[row][0] +":\n")
-		# file.write(" joint_xyz: "+str(0)+" "+str(0)+" "+str(0)+"\n")
-		# file.write(" joint_rpy: "+str(roll)+" "+str(pitch)+" "+str(yaw)+"\n")
-		# file.write(" link_xyz: "+str(0)+" "+str(0)+" "+str(float(dh[row][2]*(-0.5)))+"\n")
-		# file.write(" link_rpy: "+str(0)+" "+str(0)+" "+str(0)+"\n")
-		# file.write(" link_len: "+str(dh[row][2])+"\n")
 
-
-def link_xml_creator(link_name, length, rpy=[0, 0, 0], xyz=[0, 0, 0]):
+def link_xml_creator(link_name, rpy="0 0 0"):
 	params = get_params(link_name)
 
-	if link_name == "base" or link_name == "tool":
-		xyz_z = str(float(0.5*float(length)))
-	else:
-		xyz_z = str(float(-0.5*float(length)))
-
-	rpy = f'{rpy[0]} {rpy[1]} {rpy[2]}'
-	xyz = f'{xyz[0]} {xyz[1]} {xyz_z}'
-
 	link = ET.Element('link', name=params['link_name'])
-	# inertial = ET.SubElement(link, 'inertial')
-	# mass = ET.SubElement(inertial, 'mass', value = mass) 
-	# inertial = ET.SubElement(inertial, 'inertia', ixx="100", ixy="0", ixz="0", iyy="100", iyz="0", izz="100")
-	#origin = ET.SubElement(inertial, "origin")
 	visual = ET.SubElement(link, "visual")
-	visual_origin = ET.SubElement(visual, "origin", xyz=xyz, rpy=rpy)
+	visual_origin = ET.SubElement(visual, "origin", xyz=params['xyz'], rpy=rpy)
 	geometry = ET.SubElement(visual, "geometry")
-	geometry_type = ET.SubElement(geometry, "box", size=params['size'])
+	if params['geometry_type'] == 'sphere':
+		geometry_type = ET.SubElement(geometry, 'sphere', radius=params['radius'])
+	elif params['geometry_type'] == 'box':
+		geometry_type = ET.SubElement(geometry, 'box', size=params['size'])
+	elif params['geometry_type'] == 'cylinder':
+		geometry_type = ET.SubElement(geometry, 'cylinder', radius=params['radius'], length=params['length'])
 	material = ET.SubElement(visual, "material", name=params['material'])
 	color = ET.SubElement(material, "color", rgba=params['color'])
-	# collision = ET.SubElement(link, "collision")
-	# collision_origin = ET.SubElement(collision, "origin", xyz=xyz, rpy=rpy)
-	# collision_geometry = ET.SubElement(collision, "geometry")
-	# collision_cylinder = ET.SubElement(collision_geometry, "cylinder", radius=params['radius'], length=length)
-	# contact_cofficients = ET.SubElement(collision, "contact_cofficients", mu="0", kp="1000.0", kd="1.0")
-	# tree = ET.ElementTree(link)
-	# tree.write('robot_lab2.urdf.xml', pretty_print=True)
 	return link
 
-# def joint_xml_creator(joint_name, parent_name, child_name, origin_rpy, axis = None, limit_att = None):
-def joint_xml_creator(joint_name, rpy, xyz,):
+def joint_xml_creator(joint_name, rpy, xyz, fixed=False):
 	params = get_params(joint_name)
 	rpy = f'{rpy[0]} {rpy[1]} {rpy[2]}'
 	xyz = f'{xyz[0]} {xyz[1]} {xyz[2]}'
-	joint = ET.Element('joint', name=params['joint_name'], type=params['joint_type'])
+
+	joint = ET.Element('joint', name=params['joint_name'], type=(params['joint_type'] if not fixed else "fixed"))
 	parent = ET.SubElement(joint, 'parent', link=params['parent_name'])
 	child = ET.SubElement(joint, 'child', link=params['child_name'])
 	origin = ET.SubElement(joint, 'origin', xyz=xyz,rpy = rpy)
 	if params['joint_type'] != 'fixed':
-		axis = ET.SubElement(joint, 'axis', axis=params['axis'])
+		axis = ET.SubElement(joint, 'axis', xyz=params['axis'])
 		limit = ET.SubElement(joint, 'limit', lower=params['lower_limit'], upper=params['upper_limit'], effort=params['effort'], velocity=params['velocity'])
-	# tree = ET.ElementTree(joint)
-	# tree.write('robot_lab2_joint.urdf.xml', pretty_print=True)
 	return joint
 
 
@@ -119,23 +90,20 @@ def urdf_xml_writer(filename):
 	print('Number of rows: ' + str(rows))
 	columns = len(dh[0])
 	tree = ET.Element("robot", name="robot_bugkuc")
-	base = link_xml_creator("base", "1")
-	tool = link_xml_creator("tool", "0.01")
+	base = link_xml_creator("link_0")
 	parts_array = [base]
 	rpy, xyz = find_rpy(filename)
 	print(xyz)
 	print(rpy)
 	for i in range(rows):
 		next_joint = joint_xml_creator(f'joint_{i}_{i+1}', rpy[i], xyz[i])			
-		next_link = link_xml_creator(f'link_{i+1}', f'{dh[i][1]}')
+		next_link = link_xml_creator(f'link_{i+1}')
 		parts_array.extend((next_joint, next_link))
 
-	parts_array.append(tool)
 	tree.extend(parts_array)
 	ET.ElementTree(tree).write('robot_lab2.urdf.xml', pretty_print=True)
 
 	
-
 if __name__ == '__main__':
 	#print(csv_reader('dh_table.csv'))
 	# r = rotation_matrix_calc('dh_table.csv')
