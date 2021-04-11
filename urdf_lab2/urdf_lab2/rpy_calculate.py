@@ -1,4 +1,5 @@
 import csv
+import json
 from math import cos, sin, atan2, sqrt
 import os
 from matrix import matrix_multiplier
@@ -20,6 +21,12 @@ def csv_reader(filename):
 	dh.pop(0)
 	return dh
 
+def get_params(part):
+    with open("parts_params.json", "r") as file:
+        read_file = json.load(file)
+    part_params = read_file[part]
+    return part_params
+
 # i a d alpha theta part
 # 0 1 2 3     4     5
 def find_rpy(filename):
@@ -35,7 +42,7 @@ def find_rpy(filename):
 		rot_alpha = transformations.rotation_matrix(dh[row][3], (1,0,0))
 		trans_a = transformations.translation_matrix((dh[row][1],0,0))
 		trans_d = transformations.translation_matrix((0,0,dh[row][2]))
-		h_matrix = rot_theta @ trans_d @ trans_a @ rot_alpha
+		h_matrix = trans_a @ rot_alpha @ trans_d @ rot_theta
 		rpy_table.append(transformations.euler_from_matrix(h_matrix))
 		xyz_table.append(transformations.translation_from_matrix(h_matrix))
 	return rpy_table, xyz_table
@@ -54,46 +61,49 @@ def find_rpy(filename):
 		# file.write(" link_len: "+str(dh[row][2])+"\n")
 
 
-# def find_rpy(r):
-# 	roll = atan2(r[2][1], r[2][2])
-# 	pitch = atan2(-r[2][0], sqrt(r[2][1]*r[2][1] + r[2][2]*r[2][2]))
-# 	yaw = atan2(r[1][0], r[0][0])
-# 	return [roll, pitch, yaw]
+def link_xml_creator(link_name, length, rpy=[0, 0, 0], xyz=[0, 0, 0]):
+	params = get_params(link_name)
 
-def link_xml_creator(link_name, mass, geo_type, radius, length, rpy=[0, 0, 0], xyz=[0, 0, 0]):
+	if link_name == "base" or link_name == "tool":
+		xyz_z = str(float(0.5*float(length)))
+	else:
+		xyz_z = str(float(-0.5*float(length)))
+
 	rpy = f'{rpy[0]} {rpy[1]} {rpy[2]}'
-	xyz = f'{xyz[0]} {xyz[1]} {xyz[2]}'
-	link = ET.Element('link', name = link_name)
-	inertial = ET.SubElement(link, 'inertial')
-	mass = ET.SubElement(inertial, 'mass', value = mass) 
-	inertial = ET.SubElement(inertial, 'inertia', ixx="100", ixy="0", ixz="0", iyy="100", iyz="0", izz="100")
-	origin = ET.SubElement(inertial, "origin")
+	xyz = f'{xyz[0]} {xyz[1]} {xyz_z}'
+
+	link = ET.Element('link', name=params['link_name'])
+	# inertial = ET.SubElement(link, 'inertial')
+	# mass = ET.SubElement(inertial, 'mass', value = mass) 
+	# inertial = ET.SubElement(inertial, 'inertia', ixx="100", ixy="0", ixz="0", iyy="100", iyz="0", izz="100")
+	#origin = ET.SubElement(inertial, "origin")
 	visual = ET.SubElement(link, "visual")
 	visual_origin = ET.SubElement(visual, "origin", xyz=xyz, rpy=rpy)
 	geometry = ET.SubElement(visual, "geometry")
-	geometry_type = ET.SubElement(geometry, geo_type, radius=radius, length=length)
-	material = ET.SubElement(visual, "material", name="gray")
-	color = ET.SubElement(material, "color", rgba=".2 .2 .2 1")
-	collision = ET.SubElement(link, "collision")
-	collision_origin = ET.SubElement(collision, "origin", xyz=xyz, rpy=rpy)
-	collision_geometry = ET.SubElement(collision, "geometry")
-	collision_cylinder = ET.SubElement(geometry, "cylinder", radius=radius, length=length)
-	contact_cofficients = ET.SubElement(collision, "contact_cofficients", mu="0", kp="1000.0", kd="1.0")
+	geometry_type = ET.SubElement(geometry, "box", size=params['size'])
+	material = ET.SubElement(visual, "material", name=params['material'])
+	color = ET.SubElement(material, "color", rgba=params['color'])
+	# collision = ET.SubElement(link, "collision")
+	# collision_origin = ET.SubElement(collision, "origin", xyz=xyz, rpy=rpy)
+	# collision_geometry = ET.SubElement(collision, "geometry")
+	# collision_cylinder = ET.SubElement(collision_geometry, "cylinder", radius=params['radius'], length=length)
+	# contact_cofficients = ET.SubElement(collision, "contact_cofficients", mu="0", kp="1000.0", kd="1.0")
 	# tree = ET.ElementTree(link)
 	# tree.write('robot_lab2.urdf.xml', pretty_print=True)
 	return link
 
 # def joint_xml_creator(joint_name, parent_name, child_name, origin_rpy, axis = None, limit_att = None):
-def joint_xml_creator(joint_name, joint_type, parent_name, child_name, origin_xyz, origin_rpy, limit_att = None, axis = None):
-	rpy = f'{origin_rpy[0]} {origin_rpy[1]} {origin_rpy[2]}'
-	xyz = f'{origin_xyz[0]} {origin_xyz[1]} {origin_xyz[2]}'
-	joint = ET.Element('joint', name = joint_name, type = joint_type)
-	parent = ET.SubElement(joint, 'parent', link = parent_name)
-	child = ET.SubElement(joint, 'child', link = child_name)
+def joint_xml_creator(joint_name, rpy, xyz,):
+	params = get_params(joint_name)
+	rpy = f'{rpy[0]} {rpy[1]} {rpy[2]}'
+	xyz = f'{xyz[0]} {xyz[1]} {xyz[2]}'
+	joint = ET.Element('joint', name=params['joint_name'], type=params['joint_type'])
+	parent = ET.SubElement(joint, 'parent', link=params['parent_name'])
+	child = ET.SubElement(joint, 'child', link=params['child_name'])
 	origin = ET.SubElement(joint, 'origin', xyz=xyz,rpy = rpy)
-	if joint_type != 'fixed':
-		axis = ET.SubElement(joint, 'axis', axis = axis)
-		limit = ET.SubElement(joint, 'limit', lower = limit_att[0], upper = limit_att[1], effort = limit_att[2], velocity = limit_att[3])
+	if params['joint_type'] != 'fixed':
+		axis = ET.SubElement(joint, 'axis', axis=params['axis'])
+		limit = ET.SubElement(joint, 'limit', lower=params['lower_limit'], upper=params['upper_limit'], effort=params['effort'], velocity=params['velocity'])
 	# tree = ET.ElementTree(joint)
 	# tree.write('robot_lab2_joint.urdf.xml', pretty_print=True)
 	return joint
@@ -109,19 +119,15 @@ def urdf_xml_writer(filename):
 	print('Number of rows: ' + str(rows))
 	columns = len(dh[0])
 	tree = ET.Element("robot", name="robot_bugkuc")
-	base = link_xml_creator("base", "5", "cylinder", ".05", ".05")
-	tool = link_xml_creator("tool", ".5", "cylinder", ".0.05", "0.01")
+	base = link_xml_creator("base", "1")
+	tool = link_xml_creator("tool", "0.01")
 	parts_array = [base]
 	rpy, xyz = find_rpy(filename)
 	print(xyz)
 	print(rpy)
 	for i in range(rows):
-		if i == 0:
-			parent_name = 'base'
-		else:
-			parent_name = f'link_{i}'
-		next_joint = joint_xml_creator(str(dh[i][5]), 'fixed', parent_name, f'link_{i+1}', xyz[i], rpy[i] )			
-		next_link = link_xml_creator(f'link_{i+1}', f'1', f'cylinder', f'0.04',f'{dh[i][1]}', rpy[i], xyz[i])
+		next_joint = joint_xml_creator(f'joint_{i}_{i+1}', rpy[i], xyz[i])			
+		next_link = link_xml_creator(f'link_{i+1}', f'{dh[i][1]}')
 		parts_array.extend((next_joint, next_link))
 
 	parts_array.append(tool)

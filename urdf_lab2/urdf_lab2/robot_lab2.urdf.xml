@@ -1,132 +1,78 @@
 <robot name="robot_bugkuc">
   <link name="base">
-    <inertial>
-      <mass value="5"/>
-      <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100">
-        <origin/>
-      </inertia>
-    </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0.5" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius=".05" length=".05"/>
-        <cylinder radius=".05" length=".05"/>
+        <box size="0.2 0.2 0.2"/>
       </geometry>
-      <material name="gray">
-        <color rgba=".2 .2 .2 1"/>
+      <material name="blue">
+        <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry/>
-      <contact_cofficients mu="0" kp="1000.0" kd="1.0"/>
-    </collision>
   </link>
-  <joint name="joint1" type="fixed">
+  <joint name="joint_1" type="revolute">
     <parent link="base"/>
     <child link="link_1"/>
     <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0"/>
+    <axis axis="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="10"/>
   </joint>
   <link name="link_1">
-    <inertial>
-      <mass value="1"/>
-      <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100">
-        <origin/>
-      </inertia>
-    </inertial>
     <visual>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0"/>
+      <origin xyz="0 0 -0.0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.04" length="0.0"/>
-        <cylinder radius="0.04" length="0.0"/>
+        <box size="0.1 0.1 0.2"/>
       </geometry>
-      <material name="gray">
-        <color rgba=".2 .2 .2 1"/>
+      <material name="red">
+        <color rgba="1 0.5 0 1"/>
       </material>
     </visual>
-    <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 -0.0 0.0"/>
-      <geometry/>
-      <contact_cofficients mu="0" kp="1000.0" kd="1.0"/>
-    </collision>
   </link>
-  <joint name="joint2" type="fixed">
+  <joint name="joint_2" type="revolute">
     <parent link="link_1"/>
     <child link="link_2"/>
-    <origin xyz="0.0 0.0 0.0" rpy="-1.57 -0.0 1.57"/>
+    <origin xyz="0.0 0.0 0.0" rpy="-0.7853980048633404 1.5696701507009851 0.7853980048633404"/>
+    <axis axis="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="10"/>
   </joint>
   <link name="link_2">
-    <inertial>
-      <mass value="1"/>
-      <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100">
-        <origin/>
-      </inertia>
-    </inertial>
     <visual>
-      <origin xyz="0.0 0.0 0.0" rpy="-1.57 -0.0 1.57"/>
+      <origin xyz="0 0 -0.0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.04" length="0.0"/>
-        <cylinder radius="0.04" length="0.0"/>
+        <box size="0.1 0.1 0.7"/>
       </geometry>
-      <material name="gray">
-        <color rgba=".2 .2 .2 1"/>
+      <material name="green">
+        <color rgba="1 0.5 0 1"/>
       </material>
     </visual>
-    <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="-1.57 -0.0 1.57"/>
-      <geometry/>
-      <contact_cofficients mu="0" kp="1000.0" kd="1.0"/>
-    </collision>
   </link>
-  <joint name="joint3" type="fixed">
+  <joint name="joint_3" type="revolute">
     <parent link="link_2"/>
     <child link="link_3"/>
-    <origin xyz="-0.6899991248920022 0.0010989305123759114 0.0" rpy="0.0 -0.0 3.14"/>
+    <origin xyz="0.8 0.0 0.0" rpy="0.0 -0.0 3.14"/>
+    <axis axis="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="10"/>
   </joint>
   <link name="link_3">
-    <inertial>
-      <mass value="1"/>
-      <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100">
-        <origin/>
-      </inertia>
-    </inertial>
     <visual>
-      <origin xyz="-0.6899991248920022 0.0010989305123759114 0.0" rpy="0.0 -0.0 3.14"/>
+      <origin xyz="0 0 -0.4" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius="0.04" length="0.69"/>
-        <cylinder radius="0.04" length="0.69"/>
+        <box size="0.1 0.1 0.5"/>
       </geometry>
-      <material name="gray">
-        <color rgba=".2 .2 .2 1"/>
+      <material name="red">
+        <color rgba="1 0.5 0 1"/>
       </material>
     </visual>
-    <collision>
-      <origin xyz="-0.6899991248920022 0.0010989305123759114 0.0" rpy="0.0 -0.0 3.14"/>
-      <geometry/>
-      <contact_cofficients mu="0" kp="1000.0" kd="1.0"/>
-    </collision>
   </link>
   <link name="tool">
-    <inertial>
-      <mass value=".5"/>
-      <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100">
-        <origin/>
-      </inertia>
-    </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0.005" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius=".0.05" length="0.01"/>
-        <cylinder radius=".0.05" length="0.01"/>
+        <box size="0.2 0.2 0.05"/>
       </geometry>
-      <material name="gray">
-        <color rgba=".2 .2 .2 1"/>
+      <material name="blue">
+        <color rgba="1 0.5 0 1"/>
       </material>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry/>
-      <contact_cofficients mu="0" kp="1000.0" kd="1.0"/>
-    </collision>
   </link>
 </robot>

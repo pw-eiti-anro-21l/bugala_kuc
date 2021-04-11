@@ -1,0 +1,91 @@
+
+	{
+    "base": 
+        {
+            "link_name": "base",
+            "size": "0.2 0.2 0.2",
+            "material": "blue",
+            "color": "0.5 0.5 0.5 1",
+            "mu": "0",
+            "kp": "1000.0",
+            "kd": "1.0"
+        },
+    "link_1": 
+        {
+        "link_name": "link_1",
+        "size": "0.1 0.1 0.2",
+        "material": "red",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+    "link_2": 
+        {
+        "link_name": "link_2",
+        "size": "0.1 0.1 0.7",
+        "material": "green",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+    "link_3": 
+        {
+        "link_name": "link_3",
+        "size": "0.1 0.1 0.5",
+        "material": "red",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+    "tool": 
+        {
+        "link_name": "tool",
+        "size": "0.2 0.2 0.05",
+        "material": "blue",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+
+    "joint_1":
+    {
+        "joint_name": "joint_1",
+        "joint_type": "revolute",
+        "parent_name": "base",
+        "child_name": "link_1",
+        "axis": "0 0 1",
+        "upper_limit": "1.57",
+        "lower_limit": "-1.57",
+        "effort": "10",
+        "velocity": "10"
+    },
+
+    "joint_2":
+    {
+        "joint_name": "joint_2",
+        "joint_type": "revolute",
+        "parent_name": "link_1",
+        "child_name": "link_2",
+        "axis": "0 0 1",
+        "upper_limit": "1.57",
+        "lower_limit": "-1.57",
+        "effort": "10",
+        "velocity": "10"
+    },
+    "joint_3":
+    {
+        "joint_name": "joint_3",
+        "joint_type": "revolute",
+        "parent_name": "link_2",
+        "child_name": "link_3",
+        "axis": "0 0 1",
+        "upper_limit": "1.57",
+        "lower_limit": "-1.57",
+        "effort": "10",
+        "velocity": "10"
+    }
+}
