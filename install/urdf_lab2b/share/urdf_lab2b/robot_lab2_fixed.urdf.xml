@@ -1,0 +1,67 @@
+<robot name="robot_bugkuc">
+  <link name="base">
+    <visual>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="joint_0_1" type="fixed">
+    <parent link="base"/>
+    <child link="link_1"/>
+    <origin xyz="0.0 0.0 0.1" rpy="0.0 -0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="10" velocity="10"/>
+  </joint>
+  <link name="link_1">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0.5 0 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="joint_1_2" type="fixed">
+    <parent link="link_1"/>
+    <child link="link_2"/>
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57 -0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="-0.3" effort="10" velocity="10"/>
+  </joint>
+  <link name="link_2">
+    <visual>
+      <origin xyz="0.25 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.5 0.03 0.03"/>
+      </geometry>
+      <material name="green">
+        <color rgba="1 0.5 0 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="joint_2_tool" type="fixed">
+    <parent link="link_2"/>
+    <child link="tool"/>
+    <origin xyz="0.5 0.0 0.0" rpy="0.0 -0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.22" upper="1.22" effort="10" velocity="10"/>
+  </joint>
+  <link name="tool">
+    <visual>
+      <origin xyz="0.05 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.01 0.01"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="1 0.5 0 1"/>
+      </material>
+    </visual>
+  </link>
+</robot>

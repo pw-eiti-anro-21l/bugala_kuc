@@ -1,0 +1,90 @@
+
+	{
+    "link_0": 
+        {
+            "link_name": "base",
+            "xyz": "0 0 0.05",
+            "geometry_type": "cylinder",
+            "radius": "0.13",
+            "length": "0.1",
+            "material": "blue",
+            "color": "0.5 0.5 0.5 1",
+            "mu": "0",
+            "kp": "1000.0",
+            "kd": "1.0"
+        },
+    "link_1": 
+        {
+        "link_name": "link_1",
+        "xyz": "0 0 0",
+        "geometry_type": "sphere",
+        "radius": "0.02",
+        "material": "red",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+    "link_2": 
+        {
+        "link_name": "link_2",
+        "xyz": "0.25 0 0",
+        "geometry_type": "box",
+        "size": "0.5 0.03 0.03",
+        "material": "green",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+    "link_3": 
+        {
+        "link_name": "tool",
+        "xyz": "0.05 0 0",
+        "geometry_type": "box",
+        "size": "0.1 0.01 0.01",
+        "material": "blue",
+        "color": "1 0.5 0 1",
+        "mu": "0",
+        "kp": "1000.0",
+        "kd": "1.0"
+    },
+
+    "joint_0_1":
+    {
+        "joint_name": "joint_0_1",
+        "joint_type": "revolute",
+        "parent_name": "base",
+        "child_name": "link_1",
+        "axis": "0 0 1",
+        "upper_limit": "3.14",
+        "lower_limit": "-3.14",
+        "effort": "10",
+        "velocity": "10"
+    },
+
+    "joint_1_2":
+    {
+        "joint_name": "joint_1_2",
+        "joint_type": "revolute",
+        "parent_name": "link_1",
+        "child_name": "link_2",
+        "axis": "0 0 1",
+        "upper_limit": "-0.3",
+        "lower_limit": "-1.57",
+        "effort": "10",
+        "velocity": "10"
+    },
+    "joint_2_3":
+    {
+        "joint_name": "joint_2_tool",
+        "joint_type": "revolute",
+        "parent_name": "link_2",
+        "child_name": "tool",
+        "axis": "0 0 1",
+        "upper_limit": "1.22",
+        "lower_limit": "-1.22",
+        "effort": "10",
+        "velocity": "10"
+    }
+}
