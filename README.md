@@ -1,6 +1,8 @@
 # członkowie zespołu bugala_kuc:
 Kacper Bugała,
 Jan Kuc
+[Laboratorium 1](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-1)<br/>
+[Laboratorium 2](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-2)
 
 [WIKI](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/home)
 
