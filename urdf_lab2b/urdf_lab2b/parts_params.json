@@ -70,8 +70,8 @@
         "parent_name": "link_1",
         "child_name": "link_2",
         "axis": "0 0 1",
-        "upper_limit": "1.57",
-        "lower_limit": "0.532",
+        "upper_limit": "-0.3",
+        "lower_limit": "-1.57",
         "effort": "10",
         "velocity": "10"
     },
@@ -82,8 +82,8 @@
         "parent_name": "link_2",
         "child_name": "tool",
         "axis": "0 0 1",
-        "upper_limit": "1.57",
-        "lower_limit": "-1.57",
+        "upper_limit": "1.22",
+        "lower_limit": "-1.22",
         "effort": "10",
         "velocity": "10"
     }

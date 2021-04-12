@@ -1,0 +1,24 @@
+running egg_info
+writing ../build/urdf_lab2b/urdf_lab2b.egg-info/PKG-INFO
+writing dependency_links to ../build/urdf_lab2b/urdf_lab2b.egg-info/dependency_links.txt
+writing entry points to ../build/urdf_lab2b/urdf_lab2b.egg-info/entry_points.txt
+writing requirements to ../build/urdf_lab2b/urdf_lab2b.egg-info/requires.txt
+writing top-level names to ../build/urdf_lab2b/urdf_lab2b.egg-info/top_level.txt
+reading manifest file '../build/urdf_lab2b/urdf_lab2b.egg-info/SOURCES.txt'
+writing manifest file '../build/urdf_lab2b/urdf_lab2b.egg-info/SOURCES.txt'
+running build
+running build_py
+copying urdf_lab2b/rpy_calculate.py -> /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/build/lib/urdf_lab2b
+running install
+running install_lib
+copying /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/build/lib/urdf_lab2b/rpy_calculate.py -> /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf_lab2b
+byte-compiling /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf_lab2b/rpy_calculate.py to rpy_calculate.cpython-38.pyc
+running install_data
+copying launch/move_robot_lab2.launch.py -> /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/share/urdf_lab2b
+copying launch/joint_publisher.launch.py -> /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/share/urdf_lab2b
+running install_egg_info
+removing '/home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf_lab2b-0.0.0-py3.8.egg-info' (and everything under it)
+Copying ../build/urdf_lab2b/urdf_lab2b.egg-info to /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf_lab2b-0.0.0-py3.8.egg-info
+running install_scripts
+Installing state_publisher script to /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/urdf_lab2b
+writing list of installed files to '/home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/install.log'

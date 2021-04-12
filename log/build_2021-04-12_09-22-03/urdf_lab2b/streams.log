@@ -1,0 +1,23 @@
+[0.298s] Invoking command in '/home/jan/dev_ws/src/bugala_kuc/urdf_lab2b': PYTHONPATH=/home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../build/urdf_lab2b build --build-base /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/build install --prefix /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b --record /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/install.log --single-version-externally-managed
+[0.593s] running egg_info
+[0.595s] writing ../build/urdf_lab2b/urdf_lab2b.egg-info/PKG-INFO
+[0.596s] writing dependency_links to ../build/urdf_lab2b/urdf_lab2b.egg-info/dependency_links.txt
+[0.597s] writing entry points to ../build/urdf_lab2b/urdf_lab2b.egg-info/entry_points.txt
+[0.597s] writing requirements to ../build/urdf_lab2b/urdf_lab2b.egg-info/requires.txt
+[0.598s] writing top-level names to ../build/urdf_lab2b/urdf_lab2b.egg-info/top_level.txt
+[0.648s] reading manifest file '../build/urdf_lab2b/urdf_lab2b.egg-info/SOURCES.txt'
+[0.650s] writing manifest file '../build/urdf_lab2b/urdf_lab2b.egg-info/SOURCES.txt'
+[0.651s] running build
+[0.651s] running build_py
+[0.652s] running install
+[0.655s] running install_lib
+[0.658s] running install_data
+[0.659s] copying launch/move_robot_lab2.launch.py -> /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/share/urdf_lab2b
+[0.659s] copying launch/joint_publisher.launch.py -> /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/share/urdf_lab2b
+[0.659s] running install_egg_info
+[0.663s] removing '/home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf_lab2b-0.0.0-py3.8.egg-info' (and everything under it)
+[0.663s] Copying ../build/urdf_lab2b/urdf_lab2b.egg-info to /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf_lab2b-0.0.0-py3.8.egg-info
+[0.664s] running install_scripts
+[0.683s] Installing state_publisher script to /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/urdf_lab2b
+[0.684s] writing list of installed files to '/home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/install.log'
+[0.706s] Invoked command in '/home/jan/dev_ws/src/bugala_kuc/urdf_lab2b' returned '0': PYTHONPATH=/home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../build/urdf_lab2b build --build-base /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/build install --prefix /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b --record /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/install.log --single-version-externally-managed

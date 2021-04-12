@@ -1,0 +1,17 @@
+[0.271s] Invoking command in '/home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b': PYTHONPATH=/home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --prefix /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b --editable --build-directory /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/build --no-deps install_data --install-dir /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b
+[0.506s] running develop
+[0.646s] running egg_info
+[0.646s] writing urdf_lab2b.egg-info/PKG-INFO
+[0.647s] writing dependency_links to urdf_lab2b.egg-info/dependency_links.txt
+[0.648s] writing entry points to urdf_lab2b.egg-info/entry_points.txt
+[0.649s] writing requirements to urdf_lab2b.egg-info/requires.txt
+[0.649s] writing top-level names to urdf_lab2b.egg-info/top_level.txt
+[0.681s] reading manifest file 'urdf_lab2b.egg-info/SOURCES.txt'
+[0.682s] writing manifest file 'urdf_lab2b.egg-info/SOURCES.txt'
+[0.715s] running build_ext
+[0.716s] Creating /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages/urdf-lab2b.egg-link (link to .)
+[0.717s] Installing state_publisher script to /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/urdf_lab2b
+[0.718s] 
+[0.718s] Installed /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b
+[0.718s] running install_data
+[0.748s] Invoked command in '/home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b' returned '0': PYTHONPATH=/home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py develop --prefix /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b --editable --build-directory /home/jan/dev_ws/src/bugala_kuc/build/urdf_lab2b/build --no-deps install_data --install-dir /home/jan/dev_ws/src/bugala_kuc/install/urdf_lab2b

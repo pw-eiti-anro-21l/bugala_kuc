@@ -36,7 +36,6 @@ def find_rpy(filename):
 	columns = len(dh[0])
 	rpy_table = []
 	xyz_table = []
-	file = open('urdf_params.yaml', 'w')
 	for row in range(0, rows):
 		rot_theta = transformations.rotation_matrix(dh[row][4], (0,0,1))
 		rot_alpha = transformations.rotation_matrix(dh[row][3], (1,0,0))
