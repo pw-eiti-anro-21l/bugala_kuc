@@ -2,8 +2,6 @@ import csv
 import json
 from math import cos, sin, atan2, sqrt
 import os
-from matrix import matrix_multiplier
-#import xml.etree.ElementTree as ET
 from lxml import etree as ET
 import transformations
 
@@ -100,7 +98,7 @@ def urdf_xml_writer(filename):
 		parts_array.extend((next_joint, next_link))
 
 	tree.extend(parts_array)
-	ET.ElementTree(tree).write('robot_lab2.urdf.xml', pretty_print=True)
+	ET.ElementTree(tree).write('../urdf/robot_lab2.urdf.xml', pretty_print=True)
 
 	
 if __name__ == '__main__':
