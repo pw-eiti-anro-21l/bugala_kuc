@@ -8,7 +8,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
   use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-  urdf_file_name = 'robot_lab2.urdf.xml'
+  urdf_file_name = 'robot_lab2_fixed.urdf.xml'
   rviz_file_name = 'robot_lab2.rviz'
 
   urdf = os.path.join(

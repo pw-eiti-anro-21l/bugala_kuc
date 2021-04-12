@@ -1,3 +1,0 @@
-[console_scripts]
-state_publisher = urdf_lab2b.state_publisher:main
-
