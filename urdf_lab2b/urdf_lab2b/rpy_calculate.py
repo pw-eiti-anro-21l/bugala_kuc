@@ -19,8 +19,8 @@ def csv_reader(filename):
 	dh.pop(0)
 	return dh
 
-def get_params(part):
-    with open("parts_params.json", "r") as file:
+def get_params(part, filename):
+    with open(filename, "r") as file:
         read_file = json.load(file)
     part_params = read_file[part]
     return part_params
@@ -34,6 +34,13 @@ def find_rpy(filename):
 	columns = len(dh[0])
 	rpy_table = []
 	xyz_table = []
+	file = open('links_xyz.json', 'w')
+	file.write("{\n")
+	file.write(f'"link_0":\n')
+	file.write("	{\n")
+	file.write('		"length": "0.1",\n')
+	file.write('		"xyz": "0 0 0.05"\n')
+	file.write("	},\n")
 	for row in range(0, rows):
 		rot_theta = transformations.rotation_matrix(dh[row][4], (0,0,1))
 		rot_alpha = transformations.rotation_matrix(dh[row][3], (1,0,0))
@@ -42,28 +49,41 @@ def find_rpy(filename):
 		h_matrix = trans_a @ rot_alpha @ trans_d @ rot_theta
 		rpy_table.append(transformations.euler_from_matrix(h_matrix))
 		xyz_table.append(transformations.translation_from_matrix(h_matrix))
+		if row != 0:
+			file.write(f'"link_{row}":\n')
+			file.write("	{\n")
+			file.write('		"length": ' + '"' + str(dh[row][1]) + '",' + "\n")
+			file.write('		"xyz": ' + '"' + str(0.5*dh[row][1]) + ' 0 0"\n')
+			file.write("	},\n")
+	file.write(f'"link_4":\n')
+	file.write("	{\n")
+	file.write('		"length": "0.1",\n')
+	file.write('		"xyz": "0.05 0 0"\n')
+	file.write("	}\n")
+	file.write("}\n")
 	return rpy_table, xyz_table
 
 
 def link_xml_creator(link_name, rpy="0 0 0"):
-	params = get_params(link_name)
-
+	params = get_params(link_name, "parts_params.json")
+	links_xyz = get_params(link_name, "links_xyz.json")
 	link = ET.Element('link', name=params['link_name'])
 	visual = ET.SubElement(link, "visual")
-	visual_origin = ET.SubElement(visual, "origin", xyz=params['xyz'], rpy=rpy)
+	visual_origin = ET.SubElement(visual, "origin", xyz=links_xyz['xyz'], rpy=rpy)
 	geometry = ET.SubElement(visual, "geometry")
 	if params['geometry_type'] == 'sphere':
 		geometry_type = ET.SubElement(geometry, 'sphere', radius=params['radius'])
 	elif params['geometry_type'] == 'box':
-		geometry_type = ET.SubElement(geometry, 'box', size=params['size'])
+		geometry_type = ET.SubElement(geometry, 'box', size=links_xyz['length'] + params['size'])
 	elif params['geometry_type'] == 'cylinder':
-		geometry_type = ET.SubElement(geometry, 'cylinder', radius=params['radius'], length=params['length'])
+		geometry_type = ET.SubElement(geometry, 'cylinder', radius=params['radius'], length=links_xyz['length'])
+
 	material = ET.SubElement(visual, "material", name=params['material'])
 	color = ET.SubElement(material, "color", rgba=params['color'])
 	return link
 
 def joint_xml_creator(joint_name, rpy, xyz, fixed=False):
-	params = get_params(joint_name)
+	params = get_params(joint_name, "parts_params.json")
 	rpy = f'{rpy[0]} {rpy[1]} {rpy[2]}'
 	xyz = f'{xyz[0]} {xyz[1]} {xyz[2]}'
 
@@ -104,5 +124,5 @@ def urdf_xml_writer(filename):
 if __name__ == '__main__':
 	#print(csv_reader('dh_table.csv'))
 	# r = rotation_matrix_calc('dh_table.csv')
-	# print(find_rpy(r))
+	#print(find_rpy('dh_table.csv'))
 	urdf_xml_writer('dh_table.csv')

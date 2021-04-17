@@ -3,10 +3,8 @@
     "link_0": 
         {
             "link_name": "base",
-            "xyz": "0 0 0.05",
             "geometry_type": "cylinder",
             "radius": "0.13",
-            "length": "0.1",
             "material": "blue",
             "color": "0.5 0.5 0.5 1",
             "mu": "0",
@@ -16,7 +14,6 @@
     "link_1": 
         {
         "link_name": "link_1",
-        "xyz": "0 0 0",
         "geometry_type": "sphere",
         "radius": "0.02",
         "material": "red",
@@ -28,9 +25,8 @@
     "link_2": 
         {
         "link_name": "link_2",
-        "xyz": "0.25 0 0",
         "geometry_type": "box",
-        "size": "0.5 0.03 0.03",
+        "size": " 0.03 0.03",
         "material": "green",
         "color": "1 0.5 0 1",
         "mu": "0",
@@ -40,9 +36,8 @@
     "link_3": 
         {
         "link_name": "link_3",
-        "xyz": "0.25 0 0",
         "geometry_type": "box",
-        "size": "0.5 0.03 0.03",
+        "size": " 0.03 0.03",
         "material": "green",
         "color": "1 0.5 0 1",
         "mu": "0",
@@ -52,9 +47,8 @@
     "link_4": 
         {
         "link_name": "tool",
-        "xyz": "0.05 0 0",
         "geometry_type": "box",
-        "size": "0.1 0.01 0.01",
+        "size": " 0.01 0.01",
         "material": "blue",
         "color": "1 0.5 0 1",
         "mu": "0",
