@@ -3,7 +3,7 @@ import json
 from math import cos, sin, atan2, sqrt
 import os
 from lxml import etree as ET
-import transformations
+import mathutils
 
 def csv_reader(filename):
 	dh = []
@@ -19,22 +19,22 @@ def csv_reader(filename):
 	dh.pop(0)
 	return dh
 
-def solve():
+def solve(position):
 	dh = csv_reader('dh_table.csv')
 	T_matrix = []
 	x_axis, z_axis = (1,0,0), (0,0,1)
-	for joint in dh:
-		rot_alpha = transformations.rotation_matrix(joint[3], x_axis)
-		rot_theta = transformations.rotation_matrix(joint[4], z_axis)
-		trans_a = transformations.translation_matrix((joint[1],0,0))
-		trans_d = transformations.translation_matrix((0,0,joint[2]))
+	for joint in range (0,len(dh)-1):
+		rot_alpha = mathutils.Matrix.Rotation(dh[joint][3], 4, 'X')
+		rot_theta = mathutils.Matrix.Rotation(dh[joint][4], 4, 'Z')
+		trans_a = mathutils.Matrix.Translation((dh[joint][1],0,0))
+		trans_d = mathutils.Matrix.Translation((0,0,dh[joint][2]+position[joint]))
 		T_joint = rot_alpha @ trans_a @  rot_theta @ trans_d
 		if (len(T_matrix) != 0):
 			T_matrix = T_matrix @ T_joint
 		else:
 			T_matrix = T_joint
 	return T_matrix
-	
+
 # def get_params(part, filename):
 #     with open(filename, "r") as file:
 #         read_file = json.load(file)
