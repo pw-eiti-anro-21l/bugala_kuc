@@ -9,12 +9,13 @@ from geometry_msgs.msg import Quaternion
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import PoseStamped
 from tf2_ros import TransformBroadcaster, TransformStamped
+from ament_index_python.packages import get_package_share_directory
 from rclpy.clock import ROSClock
 import time
 
 def csv_reader(filename):
 	dh = []
-	with open(filename, 'r') as file:
+	with open(os.path.join(get_package_share_directory('lab3'), filename), 'r') as file:
 		read_file = csv.reader(file, delimiter = ';')
 		for row in read_file:
 			dh.append(row)
@@ -27,19 +28,21 @@ def csv_reader(filename):
 	return dh
 
 def solve(position):
-	dh = csv_reader('~/dev_ws/src/bugala_kuc/lab3/lab3/dh_table.csv')
+	dh = csv_reader('dh_table.csv')
 	T_matrix = []
 	x_axis, z_axis = (1,0,0), (0,0,1)
-	for joint in range (0,len(dh)-1):
+	for joint in range (0,len(dh)):
 		rot_alpha = mathutils.Matrix.Rotation(dh[joint][3], 4, 'X')
 		rot_theta = mathutils.Matrix.Rotation(dh[joint][4], 4, 'Z')
 		trans_a = mathutils.Matrix.Translation((dh[joint][1],0,0))
-		trans_d = mathutils.Matrix.Translation((0,0,dh[joint][2]+position[joint]))
+		trans_d = mathutils.Matrix.Translation((0,0,dh[joint][2]))
+		if (joint < 3):
+			rot_theta = mathutils.Matrix.Rotation(dh[joint][4]+position[joint], 4, 'Z')
 		T_joint = rot_alpha @ trans_a @  rot_theta @ trans_d
-		if (len(T_matrix) != 0):
-			T_matrix = T_matrix @ T_joint
-		else:
+		if (len(T_matrix) == 0):
 			T_matrix = T_joint
+		else:
+			T_matrix = T_matrix @ T_joint
 	return T_matrix
 
 class NonKdl(Node):
@@ -68,9 +71,10 @@ class NonKdl(Node):
 		now = self.get_clock().now()
 		pose.header.stamp = ROSClock().now().to_msg()
 		pose.header.frame_id = "base"
-		pose.pose.position.x = xyz[0]+0.1
+		pose.pose.position.x = xyz[0]
 		pose.pose.position.y = xyz[1]
-		pose.pose.position.z = xyz[2]+0.1
+		pose.pose.position.z = xyz[2]
+
 		pose.pose.orientation = Quaternion(w=quater[0], x=quater[1], y=quater[2], z=quater[3])
 		pose_pub.publish(pose)
 

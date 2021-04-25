@@ -25,8 +25,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'nonkdl = lab3.nonkdl_dkin:main'
-            #'kdl = lab3.kdl_dkin:main'
+            'nonkdl = lab3.nonkdl_dkin:main',
+            'kdl = lab3.kdl_dkin:main'
         ],
     },
 )
