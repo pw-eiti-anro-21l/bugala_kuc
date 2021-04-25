@@ -20,7 +20,7 @@ def csv_reader(filename):
 	return dh
 
 def solve(position):
-	dh = csv_reader('dh_table.csv')
+	dh = csv_reader('/home/jan/dev_ws/src/bugala_kuc/lab3/lab3dh_table.csv')
 	T_matrix = []
 	x_axis, z_axis = (1,0,0), (0,0,1)
 	for joint in range (0,len(dh)-1):
@@ -41,6 +41,3 @@ def solve(position):
 #     part_params = read_file[part]
 #     return part_params
 
-if __name__ == '__main__':
-	T = solve()
-	print(T)
