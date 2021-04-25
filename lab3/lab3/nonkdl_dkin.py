@@ -65,7 +65,7 @@ class NonKdl(Node):
 		rpy = T.to_euler()
 		quater = rpy.to_quaternion()
 
-		if (abs(msg.position[0])>1.0):
+		if (abs(msg.position[0])>3.14):
 			self.get_logger().info("Error! Joint base->1 out of range.")
 		elif (abs(msg.position[1]+0.935)>0.635):
 			self.get_logger().info("Error! Joint 1->2 out of range.")

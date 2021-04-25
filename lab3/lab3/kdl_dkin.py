@@ -62,7 +62,7 @@ class Kdl(Node):
 		chain = Chain()
 
 
-		if (abs(msg.position[0])>1.0):
+		if (abs(msg.position[0])>3.14):
 			self.get_logger().info("Error! Joint base->1 out of range.")
 			
 		elif (abs(msg.position[1]+0.935)>0.635):
