@@ -65,18 +65,26 @@ class NonKdl(Node):
 		rpy = T.to_euler()
 		quater = rpy.to_quaternion()
 
-		pose_pub = self.create_publisher(PoseStamped, '/pose_stamped_nonkdl', QoSProfile(depth=10))
+		if (abs(msg.position[0])>1.0):
+			self.get_logger().info("Error! Joint base->1 out of range.")
+		elif (abs(msg.position[1]+0.935)>0.635):
+			self.get_logger().info("Error! Joint 1->2 out of range.")
+		elif (abs(msg.position[2])>1.57):
+			self.get_logger().info("Error! Joint 2->3 out of range.")
+		else:
 
-		pose = PoseStamped()
-		now = self.get_clock().now()
-		pose.header.stamp = ROSClock().now().to_msg()
-		pose.header.frame_id = "base"
-		pose.pose.position.x = xyz[0]
-		pose.pose.position.y = xyz[1]
-		pose.pose.position.z = xyz[2]
+			pose_pub = self.create_publisher(PoseStamped, '/pose_stamped_nonkdl', QoSProfile(depth=10))
 
-		pose.pose.orientation = Quaternion(w=quater[0], x=quater[1], y=quater[2], z=quater[3])
-		pose_pub.publish(pose)
+			pose = PoseStamped()
+			now = self.get_clock().now()
+			pose.header.stamp = ROSClock().now().to_msg()
+			pose.header.frame_id = "base"
+			pose.pose.position.x = xyz[0]
+			pose.pose.position.y = xyz[1]
+			pose.pose.position.z = xyz[2]
+
+			pose.pose.orientation = Quaternion(w=quater[0], x=quater[1], y=quater[2], z=quater[3])
+			pose_pub.publish(pose)
 
 
 def main(args=None):
