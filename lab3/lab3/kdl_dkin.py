@@ -10,7 +10,6 @@ from tf2_ros import TransformBroadcaster, TransformStamped
 from ament_index_python.packages import get_package_share_directory
 from rclpy.clock import ROSClock
 from PyKDL import *
-import transformations
 import time
 
 def csv_reader(filename):
@@ -27,21 +26,6 @@ def csv_reader(filename):
 	dh.pop(0)
 	return dh
 
-def find_rpy():
-	dh = csv_reader('dh_table.csv')
-	rows = len(dh)
-	columns = len(dh[0])
-	rpy_table = []
-	xyz_table = []
-	for row in range(0, rows):
-		rot_theta = transformations.rotation_matrix(dh[row][4], (0,0,1))
-		rot_alpha = transformations.rotation_matrix(dh[row][3], (1,0,0))
-		trans_a = transformations.translation_matrix((dh[row][1],0,0))
-		trans_d = transformations.translation_matrix((0,0,dh[row][2]))
-		h_matrix = trans_a @ rot_alpha @ trans_d @ rot_theta
-		rpy_table.append(transformations.euler_from_matrix(h_matrix))
-		xyz_table.append(transformations.translation_from_matrix(h_matrix))
-	return rpy_table, xyz_table
 
 class Kdl(Node):
 
@@ -58,7 +42,6 @@ class Kdl(Node):
 	def listener_callback(self, msg):
 	
 		dh = csv_reader('dh_table.csv')
-		rpy, xyz = find_rpy()
 		chain = Chain()
 
 
