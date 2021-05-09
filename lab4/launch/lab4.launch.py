@@ -12,10 +12,10 @@ def generate_launch_description():
   rviz_file_name = 'robot_lab2.rviz'
 
   urdf = os.path.join(
-      get_package_share_directory('lab3'),
+      get_package_share_directory('lab4'),
       urdf_file_name)
   rviz = os.path.join(
-      get_package_share_directory('lab3'),
+      get_package_share_directory('lab4'),
       rviz_file_name)
 
   with open(urdf, 'r') as infp:
@@ -43,7 +43,8 @@ def generate_launch_description():
           parameters=[{'use_sim_time': use_sim_time}],
           arguments=['-d', rviz]),
       Node(
-          package='joint_state_publisher_gui',
-          executable='joint_state_publisher_gui',
-          name='joint_state_publisher_gui')
+          package='joint_state_publisher',
+          executable='joint_state_publisher',
+          name='joint_state_publisher',
+          parameters=[{'source_list': ['joint_interpolate']}])
     ])
