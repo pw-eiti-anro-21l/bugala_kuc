@@ -16,16 +16,12 @@ class Jint(Node):
 		self.joint_pub = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
 		self.initial_position = [0, 0, 0]
 		self.subscriber = self.create_subscription(JointState, 'joint_states', self.listener_callback, 10)
-		self.in_action = False
 
 	def listener_callback(self, msg):
-		# if not self.in_action:
-
 		for i in range(3):
 			self.initial_position[i] = msg.position[i]
 
 	def interpolation_callback(self, request, response):
-		# self.in_action = True
 		if request.time > 0:
 			if request.joint_0_1_sv > pi:
 				request.joint_0_1_sv = pi
@@ -44,18 +40,16 @@ class Jint(Node):
 
 			if request.method == "linear":
 				self.linear_ip(request)
-				response.output = "Linear interpolation completed."
+				response.output = "Interpolation finished with linear method. Great job!"
 
 			elif request.method == "trapezoid":
 				self.trapezoid_ip(request)
-				response.output == "Trapezoid interpolation completed."
+				response.output = "Interpolation finished with trapezoid method. Great job!"
 			
 			else:
-				response.output == "Wrong method name."
+				response.output == "Method does not exist."
 		else:
-			response.output = "Error! Wrong value of time."
-
-		self.in_action = False
+			response.output = "Error! Wrong time value."
 
 		return response
 
@@ -65,20 +59,20 @@ class Jint(Node):
 		joint_states = JointState()
 		joint_states.name = ['joint_0_1', 'joint_1_2', 'joint_2_3']
 		current_joint_states = self.initial_position
-		initial_joint_states = current_joint_states
 
 
-		for step in range(steps):
-			current_joint_states[0] += (request.joint_0_1_sv - initial_joint_states[0])/steps
-			current_joint_states[1] += (request.joint_1_2_sv - initial_joint_states[1])/steps
-			current_joint_states[2] += (request.joint_2_3_sv - initial_joint_states[2])/steps
-			joint_states.position = [float(current_joint_states[0]), float(current_joint_states[1]), float(current_joint_states[2])]
+		for step in range(steps + 1):
+			joint_0_1_state = current_joint_states[0] + (request.joint_0_1_sv - current_joint_states[0])/steps*step
+			joint_1_2_state = current_joint_states[1] + (request.joint_1_2_sv - current_joint_states[1])/steps*step
+			joint_2_3_state = current_joint_states[2] + (request.joint_2_3_sv - current_joint_states[2])/steps*step
+			joint_states.position = [float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]
 			self.joint_pub.publish(joint_states)
 			sleep(sample_time)
+		self.initial_position = [joint_0_1_state, joint_1_2_state, joint_2_3_state]
 
 	def trapezoid_ip(self, request):
 		sample_time = 0.01
-		steps = floor(request.interpolation_time/sample_time)
+		steps = floor(request.time/sample_time)
 		joint_states = JointState()
 		joint_states.name = ['joint_0_1', 'joint_1_2', 'joint_2_3']
 		current_joint_states = self.initial_position
@@ -87,7 +81,7 @@ class Jint(Node):
 		(request.joint_1_2_sv - current_joint_states[1]) / (request.time*.75),
 		(request.joint_2_3_sv - current_joint_states[2]) / (request.time*.75)]
 		v_curr = [0, 0, 0]
-		for step in range(steps):
+		for step in range(steps + 1):
 			for i in range(3):
 				if step < 0.25*steps:
 					v_curr[i] = v_max[i]*step/(.25*steps)
@@ -95,9 +89,10 @@ class Jint(Node):
 					v_curr[i] = v_max[i]
 				elif step > 0.75 * steps:
 					v_curr[i] = v_max[i] - v_max[i] * (step - .75*steps)/(.25*steps)
-			for i in range(3):
-				current_joint_states[i] += v_curr[i]*request.time/steps
-				joint_states.position[i] = float[current_joint_states[i]]
+			for j in range(3):
+				current_joint_states[j] = current_joint_states[j] + v_curr[j]*request.time/steps
+				# joint_0_1_state = current_joint_states[]
+			joint_states.position = [float(current_joint_states[0]), float(current_joint_states[1]), float(current_joint_states[2])]
 
 			self.joint_pub.publish(joint_states)
 			sleep(sample_time)

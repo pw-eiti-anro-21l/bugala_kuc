@@ -45,8 +45,6 @@ class Oint(Node):
 		pose = PoseStamped()
 		current_position = self.initial_position
 		current_orientation = self.initial_orientation
-		initial_position = current_position
-		initial_orientation = current_orientation
 
 		marker = Marker()
 		markers = MarkerArray()
@@ -61,15 +59,15 @@ class Oint(Node):
 		marker.color.b = 1.0
 		marker.header.frame_id = "/base"
 
-		for step in range(steps):
-			current_position[0] += (request.x_sv - initial_position[0])/steps
-			current_position[1] += (request.y_sv - initial_position[1])/steps
-			current_position[2] += (request.z_sv - initial_position[2])/steps
+		for step in range(steps+1):
+			pos_x = current_position[0] + (request.x_sv - current_position[0])/steps*step
+			pos_y = current_position[1] + (request.y_sv - current_position[1])/steps*step
+			pos_z = current_position[2] + (request.z_sv - current_position[2])/steps*step
 			
-			current_orientation[0] += (request.roll_sv - initial_orientation[0])/steps
-			current_orientation[1] += (request.pitch_sv - initial_orientation[1])/steps
-			current_orientation[2] += (request.yaw_sv - initial_orientation[2])/steps
-			orientation_quaternion = Quaternion(w=0.0, x=current_orientation[0], y=current_orientation[1], z=current_orientation[2])
+			roll = current_orientation[0]  + (request.roll_sv - initial_orientation[0])/steps
+			pitch = current_orientation[1] + (request.pitch_sv - initial_orientation[1])/steps
+			yaw = current_orientation[2] + (request.yaw_sv - initial_orientation[2])/steps
+			orientation_quaternion = Quaternion(w=0.0, x=roll, y=pitch, z=yaw)
 
 
 			if request.version == "ext":  
@@ -78,16 +76,16 @@ class Oint(Node):
 				orientation_quaternion = self.euler_to_quaternion(0, 0, 0)
 
 			pose.header.frame_id = "base"
-			pose.pose.position.x = current_position[0]
-			pose.pose.position.y = current_position[1]
-			pose.pose.position.z = current_position[2]
+			pose.pose.position.x = pos_x
+			pose.pose.position.y = pos_y
+			pose.pose.position.z = pos_z
 			pose.pose.orientation = orientation_quaternion
 			sleep(sample_time)
 			
 			self.pose_publisher.publish(pose)
-			marker.pose.position.x = current_position[0]
-			marker.pose.position.y = current_position[1]
-			marker.pose.position.z = current_position[2]
+			marker.pose.position.x = pos_x
+			marker.pose.position.y = pos_y
+			marker.pose.position.z = pos_z
 			marker.pose.orientation = orientation_quaternion
 			markers.markers.append(marker)
 			id=0

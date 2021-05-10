@@ -1,12 +1,12 @@
 import sys
 import rclpy
 from rclpy.node import Node
-from zadanie4_interface.srv import oInterpolation
+from lab4_interfaces.srv import OInterpolation as oInterpolation 
 
 class Oint_client(Node):
 	def __init__(self):
 		super().__init__('oint_client')
-		self.client = self.create_client(ooInterpolation, 'ooInterpolation')
+		self.client = self.create_client(oInterpolation, 'oInterpolation')
 		while not self.client.wait_for_service(timeout_sec=1.0):
 			self.get_logger().info('service not available, waiting again...')
 		self.request = oInterpolation.Request()
@@ -17,8 +17,8 @@ class Oint_client(Node):
 			self.request.joint_1_2_sv = float(sys.argv[2])
 			self.request.joint_2_3_sv = float(sys.argv[3])
 			self.request.time = float(sys.argv[4])
-			self.req.method = sys.argv[5]
-			self.future = self.client.call_async(self.req)
+			self.request.method = sys.argv[5]
+			self.future = self.client.call_async(self.request)
 		except:
 			pass
 	#     except ValueError:
@@ -51,7 +51,7 @@ def main(args=None):
 				oint_client.get_logger().info(
 					'Service call failed %r' % (e,))
 			else:
-				oint_client.get_logger().info(response.server_feedback)
+				oint_client.get_logger().info(response.output)
 			break
 
 	oint_client.destroy_node()

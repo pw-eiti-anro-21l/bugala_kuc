@@ -17,8 +17,9 @@ class Jint_client(Node):
 			self.request.joint_1_2_sv = float(sys.argv[2])
 			self.request.joint_2_3_sv = float(sys.argv[3])
 			self.request.time = float(sys.argv[4])
-			self.req.method = sys.argv[5]
-			self.future = self.client.call_async(self.req)
+			self.request.method = sys.argv[5]
+			self.future = self.client.call_async(self.request)
+			print([self.request.joint_0_1_sv, self.request.joint_1_2_sv, self.request.joint_2_3_sv, self.request.time, self.request.method])
 		except:
 			pass
 	#     except ValueError:
@@ -52,7 +53,7 @@ def main(args=None):
 				jint_client.get_logger().info(
 					'Service call failed %r' % (e,))
 			else:
-				jint_client.get_logger().info(response.server_feedback)
+				jint_client.get_logger().info(response.output)
 			break
 
 	jint_client.destroy_node()
