@@ -8,17 +8,22 @@ class Oint_client(Node):
 		super().__init__('oint_client')
 		self.client = self.create_client(oInterpolation, 'oInterpolation')
 		while not self.client.wait_for_service(timeout_sec=1.0):
-			self.get_logger().info('service not available, waiting again...')
+			self.get_logger().info('Service not available, waiting again...')
 		self.request = oInterpolation.Request()
 
 	def send_request(self):
 		try:
-			self.request.joint_0_1_sv = float(sys.argv[1])
-			self.request.joint_1_2_sv = float(sys.argv[2])
-			self.request.joint_2_3_sv = float(sys.argv[3])
-			self.request.time = float(sys.argv[4])
-			self.request.method = sys.argv[5]
+			self.request.x_sv = float(sys.argv[1])
+			self.request.y_sv = float(sys.argv[2])
+			self.request.z_sv = float(sys.argv[3])
+			self.request.roll_sv = float(sys.argv[4])
+			self.request.pitch_sv = float(sys.argv[5])
+			self.request.yaw_sv = float(sys.argv[6])
+			self.request.time = float(sys.argv[7])
+			self.request.method = sys.argv[8]
+			self.request.version = sys.argv[9]
 			self.future = self.client.call_async(self.request)
+			print[f'{self.request.roll_sv},{self.request.pitch_sv},{self.request.yaw_sv}, {self.request.time}, {self.request.method},{self.request.version}']
 		except:
 			pass
 	#     except ValueError:

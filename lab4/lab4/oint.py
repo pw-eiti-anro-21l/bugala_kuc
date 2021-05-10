@@ -15,8 +15,8 @@ class Oint(Node):
 		super().__init__('oint')
 		self.srv = self.create_service(oInterpolation, 'oInterpolation', self.oInterpolation_callback)
 		qos_profile = QoSProfile(depth=10)
-		self.marker_publisher = self.create_publisher(MarkerArray, '/marker', qos_profile)
-		self.pose_publisher = self.create_publisher(PoseStamped, 'oint_pose', qos_profile)
+		self.marker_pub = self.create_publisher(MarkerArray, '/marker', qos_profile)
+		self.pose_pub = self.create_publisher(PoseStamped, 'oint_pose', qos_profile)
 		self.initial_position = [0, 0, 0]
 		self.initial_orientation = [0, 0, 0]
 
@@ -26,16 +26,16 @@ class Oint(Node):
 
 			if request.method == "linear":
 				self.linear_ip(request)
-				response.output = "Linear oInterpolation completed."
+				response.output = "oInterpolation finished with linear method."
 
 			elif request.method == "trapezoid":
 				self.trapezoid_ip(request)
-				response.output == "Trapezoid oInterpolation completed."
+				response.output == "oInterpolation finished with trapezoid method."
 			
 			else:
-				response.output == "Wrong method name."
+				response.output == "This method does not exist."
 		else:
-			response.output = "Error! Wrong value of time."
+			response.output = "Error! Value of time is invalid."
 
 		return response
 
@@ -58,20 +58,20 @@ class Oint(Node):
 		marker.color.g = 0.0
 		marker.color.b = 1.0
 		marker.header.frame_id = "/base"
-
+		print('dzialam')
 		for step in range(steps+1):
 			pos_x = current_position[0] + (request.x_sv - current_position[0])/steps*step
 			pos_y = current_position[1] + (request.y_sv - current_position[1])/steps*step
 			pos_z = current_position[2] + (request.z_sv - current_position[2])/steps*step
 			
-			roll = current_orientation[0]  + (request.roll_sv - initial_orientation[0])/steps
-			pitch = current_orientation[1] + (request.pitch_sv - initial_orientation[1])/steps
-			yaw = current_orientation[2] + (request.yaw_sv - initial_orientation[2])/steps
+			roll = current_orientation[0]  + (request.roll_sv - current_orientation[0])/steps*step
+			pitch = current_orientation[1] + (request.pitch_sv - current_orientation[1])/steps*step
+			yaw = current_orientation[2] + (request.yaw_sv - current_orientation[2])/steps*step
 			orientation_quaternion = Quaternion(w=0.0, x=roll, y=pitch, z=yaw)
 
 
 			if request.version == "ext":  
-				orientation_quaternion = self.euler_to_quaternion(current_orientation[0], current_orientation[1], current_orientation[2])
+				orientation_quaternion = self.euler_to_quaternion(roll, pitch, yaw)
 			else:
 				orientation_quaternion = self.euler_to_quaternion(0, 0, 0)
 
@@ -82,7 +82,7 @@ class Oint(Node):
 			pose.pose.orientation = orientation_quaternion
 			sleep(sample_time)
 			
-			self.pose_publisher.publish(pose)
+			self.pose_pub.publish(pose)
 			marker.pose.position.x = pos_x
 			marker.pose.position.y = pos_y
 			marker.pose.position.z = pos_z
@@ -92,7 +92,7 @@ class Oint(Node):
 			for marker in markers.markers:
 				marker.id = id
 				id += 1
-			self.marker_publisher.publish(markers)
+			self.marker_pub.publish(markers)
 
 		self.initial_position = current_position
 		self.initial_orientation = current_orientation
@@ -159,7 +159,7 @@ class Oint(Node):
 			pose.pose.orientation = orientation_quaternion
 			sleep(sample_time)
 			
-			self.pose_publisher.publish(pose)
+			self.pose_pub.publish(pose)
 			marker.pose.position.x = current_position[0]
 			marker.pose.position.y = current_position[1]
 			marker.pose.position.z = current_position[2]
@@ -169,7 +169,7 @@ class Oint(Node):
 			for marker in markers.markers:
 				marker.id = id
 				id += 1
-			self.marker_publisher.publish(markers)
+			self.marker_pub.publish(markers)
 
 		self.initial_position = current_position
 		self.initial_orientation = current_orientation
