@@ -2,7 +2,9 @@
 Kacper Bugała,
 Jan Kuc<br/>
 [Laboratorium 1](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-1)<br/>
-[Laboratorium 2](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-2)
+[Laboratorium 2](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-2)<br/>
+[Laboratorium 3](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-3)<br/>
+[Laboratorium 4](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/Laboratorium-4)<br/>
 
 [WIKI](https://github.com/pw-eiti-anro-21l/bugala_kuc/wiki/home)
 
