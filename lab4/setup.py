@@ -25,8 +25,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'nonkdl = lab3.nonkdl_dkin:main',
-            'kdl = lab3.kdl_dkin:main'
+            'jint = lab4.jint:main',
+            'oint = lab4.oint:main',
+            'jint_client = lab4.jcmd:main',
+            'oint_client = lab4.ocmd:main'
         ],
     },
 )

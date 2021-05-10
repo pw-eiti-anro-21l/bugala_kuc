@@ -28,6 +28,7 @@ if(BUILD_TESTING)
 
 	rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/Interpolation.srv"
+  "srv/OInterpolation.srv"
  )
  
   # the following line skips the linter which checks for copyrights
