@@ -20,13 +20,12 @@ class Jint(Node):
 
 	def listener_callback(self, msg):
 		# if not self.in_action:
-		print('dupa2')
+
 		for i in range(3):
 			self.initial_position[i] = msg.position[i]
 
 	def interpolation_callback(self, request, response):
 		# self.in_action = True
-		print('dupa')
 		if request.time > 0:
 			if request.joint_0_1_sv > pi:
 				request.joint_0_1_sv = pi
@@ -70,7 +69,6 @@ class Jint(Node):
 
 
 		for step in range(steps):
-			print('dupeczka')
 			current_joint_states[0] += (request.joint_0_1_sv - initial_joint_states[0])/steps
 			current_joint_states[1] += (request.joint_1_2_sv - initial_joint_states[1])/steps
 			current_joint_states[2] += (request.joint_2_3_sv - initial_joint_states[2])/steps
