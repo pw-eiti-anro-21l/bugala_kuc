@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Quaternion
-from visualization_msgs.msg import Marker, MarkerArray
+# from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, floor, pi
 from rclpy.qos import QoSProfile
 from time import sleep
@@ -22,15 +22,17 @@ class Oint(Node):
 
 	def oInterpolation_callback(self, request, response):
 		if request.time > 0:
-			#wrocimy tu
-
 			if request.method == "linear":
 				self.linear_ip(request)
 				response.output = "oInterpolation finished with linear method."
+				self.initial_position = [0, 0, 0]
+				self.initial_orientation = [0, 0, 0]
 
 			elif request.method == "trapezoid":
 				self.trapezoid_ip(request)
-				response.output == "oInterpolation finished with trapezoid method."
+				response.output = "oInterpolation finished with trapezoid method."
+				self.initial_position = [0, 0, 0]
+				self.initial_orientation = [0, 0, 0]
 			
 			else:
 				response.output == "This method does not exist."
@@ -46,19 +48,18 @@ class Oint(Node):
 		current_position = self.initial_position
 		current_orientation = self.initial_orientation
 
-		marker = Marker()
-		markers = MarkerArray()
-		marker.type = 2
-		marker.action = 0
-		marker.scale.x = 0.05
-		marker.scale.y = 0.05
-		marker.scale.z = 0.05
-		marker.color.a = 0.5
-		marker.color.r = 1.0
-		marker.color.g = 0.0
-		marker.color.b = 1.0
-		marker.header.frame_id = "/base"
-		print('dzialam')
+		# marker = Marker()
+		# markers = MarkerArray()
+		# marker.type = 2
+		# marker.action = 0
+		# marker.scale.x = 0.05
+		# marker.scale.y = 0.05
+		# marker.scale.z = 0.05
+		# marker.color.a = 0.5
+		# marker.color.r = 1.0
+		# marker.color.g = 0.0
+		# marker.color.b = 1.0
+		# marker.header.frame_id = "/base"
 		for step in range(steps+1):
 			pos_x = current_position[0] + (request.x_sv - current_position[0])/steps*step
 			pos_y = current_position[1] + (request.y_sv - current_position[1])/steps*step
@@ -69,12 +70,6 @@ class Oint(Node):
 			yaw = current_orientation[2] + (request.yaw_sv - current_orientation[2])/steps*step
 			orientation_quaternion = Quaternion(w=0.0, x=roll, y=pitch, z=yaw)
 
-
-			if request.version == "ext":  
-				orientation_quaternion = self.euler_to_quaternion(roll, pitch, yaw)
-			else:
-				orientation_quaternion = self.euler_to_quaternion(0, 0, 0)
-
 			pose.header.frame_id = "base"
 			pose.pose.position.x = pos_x
 			pose.pose.position.y = pos_y
@@ -82,29 +77,28 @@ class Oint(Node):
 			pose.pose.orientation = orientation_quaternion
 			sleep(sample_time)
 			
-			self.pose_pub.publish(pose)
-			marker.pose.position.x = pos_x
-			marker.pose.position.y = pos_y
-			marker.pose.position.z = pos_z
-			marker.pose.orientation = orientation_quaternion
-			markers.markers.append(marker)
-			id=0
-			for marker in markers.markers:
-				marker.id = id
-				id += 1
-			self.marker_pub.publish(markers)
+			# self.pose_pub.publish(pose)
+			# marker.pose.position.x = pos_x
+			# marker.pose.position.y = pos_y
+			# marker.pose.position.z = pos_z
+			# marker.pose.orientation = orientation_quaternion
+			# markers.markers.append(marker)
+			# id=0
+			# for marker in markers.markers:
+			# 	marker.id = id
+			# 	id += 1
+			# self.marker_pub.publish(markers)
 
 		self.initial_position = current_position
 		self.initial_orientation = current_orientation
 
 	def trapezoid_ip(self, request):
 		sample_time = 0.01
-		steps = floor(request.oInterpolation_time/sample_time)
+		steps = floor(request.time/sample_time)
 		pose = PoseStamped()
 		current_position = self.initial_position
 		current_orientation = self.initial_orientation
-		initial_position = current_position
-		initial_orientation = current_orientation
+
 
 		v_max_pos = [
 		(request.x_sv - current_position[0]) / (request.time*.75),
@@ -146,12 +140,8 @@ class Oint(Node):
 			for i in range(3):
 				current_position[i] += v_curr_pos[i]*request.time/steps
 				current_orientation[i] += v_curr_ort[i]*request.time/steps
+			orientation_quaternion = Quaternion(w=0.0, x=current_orientation[2], y=current_orientation[1], z=current_orientation[0])
 
-			if request.version == "ext":  
-				ort_quaternion = self.euler_to_quaternion(current_orientation[0], current_orientation[1], current_orientation[2])
-			else:
-				ort_quaternion = self.euler_to_quaternion(0, 0, 0)
-			
 			pose.header.frame_id = "base"
 			pose.pose.position.x = current_position[0]
 			pose.pose.position.y = current_position[1]
@@ -173,14 +163,6 @@ class Oint(Node):
 
 		self.initial_position = current_position
 		self.initial_orientation = current_orientation
-
-
-	def euler_to_quaternion(self,roll, pitch, yaw):
-		qx = sin(roll/2) * cos(pitch/2) * cos(yaw/2) - cos(roll/2) * sin(pitch/2) * sin(yaw/2)
-		qy = cos(roll/2) * sin(pitch/2) * cos(yaw/2) + sin(roll/2) * cos(pitch/2) * sin(yaw/2)
-		qz = cos(roll/2) * cos(pitch/2) * sin(yaw/2) - sin(roll/2) * sin(pitch/2) * cos(yaw/2)
-		qw = cos(roll/2) * cos(pitch/2) * cos(yaw/2) + sin(roll/2) * sin(pitch/2) * sin(yaw/2)
-		return Quaternion(x=qx, y=qy, z=qz, w=qw)
 
 
 def main(args=None):

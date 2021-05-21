@@ -1,3 +1,9 @@
+import csv
+import os
+import numpy
+# import mathutils
+from ament_index_python.packages import get_package_share_directory
+import transformations
 from lab4_interfaces.srv import Interpolation
 import rclpy
 from rclpy.node import Node
@@ -6,6 +12,23 @@ from rclpy.qos import QoSProfile
 from math import floor
 from time import sleep
 from math import pi
+# from visualization_msgs.msg import Marker, MarkerArray
+
+def csv_reader(filename):
+	dh = []
+	with open(os.path.join(get_package_share_directory('lab3'), filename), 'r') as file:
+		read_file = csv.reader(file, delimiter = ';')
+		for row in read_file:
+			dh.append(row)
+	rows = len(dh)
+	columns = len(dh[0])
+	for i in range(1, rows):
+		for j in range(1, columns-1):
+			dh[i][j] = float(dh[i][j])
+	dh.pop(0)
+	return dh
+
+dh = csv_reader('dh_table.csv')
 
 class Jint(Node):
 
@@ -13,9 +36,11 @@ class Jint(Node):
 		super().__init__('jint')
 		self.srv = self.create_service(Interpolation, 'interpolation', self.interpolation_callback)
 		qos_profile = QoSProfile(depth=10)
+		self.marker_pub = self.create_publisher(MarkerArray, '/marker', qos_profile)
 		self.joint_pub = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
 		self.initial_position = [0, 0, 0]
 		self.subscriber = self.create_subscription(JointState, 'joint_states', self.listener_callback, 10)
+
 
 	def listener_callback(self, msg):
 		for i in range(3):
@@ -40,7 +65,7 @@ class Jint(Node):
 
 			if request.method == "linear":
 				self.linear_ip(request)
-				response.output = "Interpolation finished with linear method. Great job!"
+				response.output = f'Interpolation finished with linear method. Great job!'
 
 			elif request.method == "trapezoid":
 				self.trapezoid_ip(request)
@@ -60,6 +85,19 @@ class Jint(Node):
 		joint_states.name = ['joint_0_1', 'joint_1_2', 'joint_2_3']
 		current_joint_states = self.initial_position
 
+		# marker = Marker()
+		# markers = MarkerArray()
+		# marker.type = 2
+		# marker.action = 0
+		# marker.scale.x = 0.05
+		# marker.scale.y = 0.05
+		# marker.scale.z = 0.05
+		# marker.color.a = 0.5
+		# marker.color.r = 1.0
+		# marker.color.g = 0.0
+		# marker.color.b = 1.0
+		# marker.header.frame_id = "/base"
+
 
 		for step in range(steps + 1):
 			joint_0_1_state = current_joint_states[0] + (request.joint_0_1_sv - current_joint_states[0])/steps*step
@@ -68,6 +106,19 @@ class Jint(Node):
 			joint_states.position = [float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]
 			self.joint_pub.publish(joint_states)
 			sleep(sample_time)
+
+			# xyz_pose = find_tool([float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]) 
+			# marker.pose.position.x = xyz_pose[0]
+			# marker.pose.position.y = xyz_pose[1]
+			# marker.pose.position.z = xyz_pose[2]
+			# # marker.pose.orientation = orientation_quaternion
+			# markers.markers.append(marker)
+			# id=0
+			# for marker in markers.markers:
+			# 	marker.id = id
+			# 	id += 1
+			# self.marker_pub.publish(markers)
+
 		self.initial_position = [joint_0_1_state, joint_1_2_state, joint_2_3_state]
 
 	def trapezoid_ip(self, request):
@@ -81,6 +132,20 @@ class Jint(Node):
 		(request.joint_1_2_sv - current_joint_states[1]) / (request.time*.75),
 		(request.joint_2_3_sv - current_joint_states[2]) / (request.time*.75)]
 		v_curr = [0, 0, 0]
+
+		# marker = Marker()
+		# markers = MarkerArray()
+		# marker.type = 2
+		# marker.action = 0
+		# marker.scale.x = 0.05
+		# marker.scale.y = 0.05
+		# marker.scale.z = 0.05
+		# marker.color.a = 0.5
+		# marker.color.r = 1.0
+		# marker.color.g = 0.0
+		# marker.color.b = 1.0
+		# marker.header.frame_id = "/base"
+
 		for step in range(steps + 1):
 			for i in range(3):
 				if step < 0.25*steps:
@@ -96,7 +161,35 @@ class Jint(Node):
 
 			self.joint_pub.publish(joint_states)
 			sleep(sample_time)
+
+			self.joint_pub.publish(pose)
+			# marker.pose.position.x = current_position[0]
+			# marker.pose.position.y = current_position[1]
+			# marker.pose.position.z = current_position[2]
+			# marker.pose.orientation = orientation_quaternion
+			# markers.markers.append(marker)
+			# id=0
+			# for marker in markers.markers:
+			# 	marker.id = id
+			# 	id += 1
+			# self.marker_pub.publish(markers)
+		
 		self.initial_position = [current_joint_states[0], current_joint_states[1], current_joint_states[2]]
+
+# def find_tool(joints):
+# 	T = numpy.eye(4)
+# 	# xyz_pose=[float(1),float(1),float(1)]
+# 	for row in range(len(dh)-1):
+# 		# print(rows)
+# 		rot_theta = transformations.rotation_matrix(float(dh[row][4]+joints[row]), (0,0,1))
+# 		rot_alpha = transformations.rotation_matrix(0.0, (1,0,0))
+# 		trans_a = transformations.translation_matrix((dh[row+1][1],0,0))
+# 		trans_d = transformations.translation_matrix((0,0,dh[row+1][2]))
+# 		T_matrix = rot_alpha @ trans_a @ rot_theta @ trans_d
+# 		T = T @ T_matrix
+# 	xyz_pose = [T[0][3], T[1][3], T[2][3]]
+# 	return xyz_pose
+
 
 
 def main(args=None):
