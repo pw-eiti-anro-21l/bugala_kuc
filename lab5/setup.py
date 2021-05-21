@@ -25,6 +25,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+                'oint = lab5.oint:main',
+                'oint_client = lab5.ocmd:main',
+                'ikin = lab5.ikin:main',
         ],
     },
 )
