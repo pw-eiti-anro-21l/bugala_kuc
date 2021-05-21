@@ -14,6 +14,17 @@ from time import sleep
 from math import pi
 # from visualization_msgs.msg import Marker, MarkerArray
 
+
+import rclpy
+from rclpy.node import Node 
+from geometry_msgs.msg import PoseStamped
+from sensor_msgs.msg import JointState
+from math import cos, sin, atan, atan2, sqrt, acos, asin, pi
+from rclpy.qos import QoSProfile
+import transformations
+# import mathutils
+
+
 def csv_reader(filename):
 	dh = []
 	with open(os.path.join(get_package_share_directory('lab3'), filename), 'r') as file:
@@ -36,10 +47,16 @@ class Jint(Node):
 		super().__init__('jint')
 		self.srv = self.create_service(Interpolation, 'interpolation', self.interpolation_callback)
 		qos_profile = QoSProfile(depth=10)
-		self.marker_pub = self.create_publisher(MarkerArray, '/marker', qos_profile)
+		# self.marker_pub = self.create_publisher(MarkerArray, '/marker', qos_profile)
 		self.joint_pub = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
 		self.initial_position = [0, 0, 0]
 		self.subscriber = self.create_subscription(JointState, 'joint_states', self.listener_callback, 10)
+
+
+		self.base_height = 0.1
+		self.length_1_2 = 0.5
+		self.length_2_tool = 0.6
+
 
 
 	def listener_callback(self, msg):
@@ -106,7 +123,7 @@ class Jint(Node):
 		# 	joint_states.position = [float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]
 			# 
 
-		joints_v = find_tool([0.5,.5,.5])
+		joints_v = self.find_joint_states([.6,.6,.2])
 		for step in range(steps + 1):
 			joint_0_1_state = current_joint_states[0] + (joints_v[0] - current_joint_states[0])/steps*step
 			joint_1_2_state = current_joint_states[1] + (joints_v[1] - current_joint_states[1])/steps*step
@@ -214,10 +231,10 @@ class Jint(Node):
 		d = self.length_2_tool
 		dist = sqrt(x*x + y*y + z*z)
 		gamma = acos((a*a + d*d - dist*dist)/(2*a*d))
-		joint_2_3 = pi - gamma
+		joint_2_3 = -(pi - gamma)
 		alpha = asin(d*sin(gamma)/dist)
-		joint_1_2 = alpha + atan2(z/sqrt(x*x + y*y))
-		joint_0_1 = atan2(y/x)
+		joint_1_2 = alpha + atan(z/sqrt(x*x + y*y))
+		joint_0_1 = atan(y/x)
 		return [joint_0_1, joint_1_2, joint_2_3]
 
 
