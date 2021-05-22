@@ -7,7 +7,7 @@
   <maintainer email="janekkuc00@gmail.com">jan</maintainer>
   <license>TODO: License declaration</license>
   
-    <depend>rclpy</depend>
+  <depend>rclpy</depend>
   <depend>lab5_interfaces</depend>
 
   <test_depend>ament_copyright</test_depend>

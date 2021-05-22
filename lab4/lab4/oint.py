@@ -48,18 +48,19 @@ class Oint(Node):
 		current_position = self.initial_position
 		current_orientation = self.initial_orientation
 
-		# marker = Marker()
-		# markers = MarkerArray()
-		# marker.type = 2
-		# marker.action = 0
-		# marker.scale.x = 0.05
-		# marker.scale.y = 0.05
-		# marker.scale.z = 0.05
-		# marker.color.a = 0.5
-		# marker.color.r = 1.0
-		# marker.color.g = 0.0
-		# marker.color.b = 1.0
-		# marker.header.frame_id = "/base"
+		marker = Marker()
+		markers = MarkerArray()
+		marker.type = 2
+		marker.action = 0
+		marker.scale.x = 0.05
+		marker.scale.y = 0.05
+		marker.scale.z = 0.05
+		marker.color.a = 0.5
+		marker.color.r = 1.0
+		marker.color.g = 0.0
+		marker.color.b = 1.0
+		marker.header.frame_id = "/base"
+		
 		for step in range(steps+1):
 			pos_x = current_position[0] + (request.x_sv - current_position[0])/steps*step
 			pos_y = current_position[1] + (request.y_sv - current_position[1])/steps*step
@@ -77,17 +78,17 @@ class Oint(Node):
 			pose.pose.orientation = orientation_quaternion
 			sleep(sample_time)
 			
-			# self.pose_pub.publish(pose)
-			# marker.pose.position.x = pos_x
-			# marker.pose.position.y = pos_y
-			# marker.pose.position.z = pos_z
-			# marker.pose.orientation = orientation_quaternion
-			# markers.markers.append(marker)
-			# id=0
-			# for marker in markers.markers:
-			# 	marker.id = id
-			# 	id += 1
-			# self.marker_pub.publish(markers)
+			self.pose_pub.publish(pose)
+			marker.pose.position.x = pos_x
+			marker.pose.position.y = pos_y
+			marker.pose.position.z = pos_z
+			marker.pose.orientation = orientation_quaternion
+			markers.markers.append(marker)
+			id=0
+			for marker in markers.markers:
+				marker.id = id
+				id += 1
+			self.marker_pub.publish(markers)
 
 		self.initial_position = current_position
 		self.initial_orientation = current_orientation

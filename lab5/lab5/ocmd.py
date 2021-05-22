@@ -1,7 +1,7 @@
+from lab5_interfaces.srv import InvKin
 import sys
 import rclpy
 from rclpy.node import Node
-from lab5_interfaces.srv import InvKin 
 
 class Oint_client(Node):
 	def __init__(self):
