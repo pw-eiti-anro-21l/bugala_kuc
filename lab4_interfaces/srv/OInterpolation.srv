@@ -6,5 +6,6 @@ float64 pitch_sv
 float64 yaw_sv
 float64 time
 string method
+string version
 ---
 string output
