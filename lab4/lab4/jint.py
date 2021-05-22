@@ -53,9 +53,10 @@ class Jint(Node):
 		self.subscriber = self.create_subscription(JointState, 'joint_states', self.listener_callback, 10)
 
 
-		self.base_height = 0.1
-		self.length_1_2 = 0.5
-		self.length_2_tool = 0.6
+			# lab5
+		# self.base_height = 0.1
+		# self.length_1_2 = 0.5
+		# self.length_2_tool = 0.6
 
 
 
@@ -116,28 +117,32 @@ class Jint(Node):
 		# marker.header.frame_id = "/base"
 
 
-		# for step in range(steps + 1):
-		# 	joint_0_1_state = current_joint_states[0] + (request.joint_0_1_sv - current_joint_states[0])/steps*step
-		# 	joint_1_2_state = current_joint_states[1] + (request.joint_1_2_sv - current_joint_states[1])/steps*step
-		# 	joint_2_3_state = current_joint_states[2] + (request.joint_2_3_sv - current_joint_states[2])/steps*step
-		# 	joint_states.position = [float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]
-			# 
-
-		joints_v = self.find_joint_states([.6,.6,.2])
 		for step in range(steps + 1):
-			joint_0_1_state = current_joint_states[0] + (joints_v[0] - current_joint_states[0])/steps*step
-			joint_1_2_state = current_joint_states[1] + (joints_v[1] - current_joint_states[1])/steps*step
-			joint_2_3_state = current_joint_states[2] + (joints_v[2] - current_joint_states[2])/steps*step
+			joint_0_1_state = current_joint_states[0] + (request.joint_0_1_sv - current_joint_states[0])/steps*step
+			joint_1_2_state = current_joint_states[1] + (request.joint_1_2_sv - current_joint_states[1])/steps*step
+			joint_2_3_state = current_joint_states[2] + (request.joint_2_3_sv - current_joint_states[2])/steps*step
 			joint_states.position = [float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]
+			
+
+
+
+
+
+
+			# Dzialajace na lab5:
+
+		# joints_v = self.find_joint_states([-.6,.4,.3])
+		# for step in range(steps + 1):
+		# 	joint_0_1_state = current_joint_states[0] + (joints_v[0] - current_joint_states[0])/steps*step
+		# 	joint_1_2_state = current_joint_states[1] + (joints_v[1] - current_joint_states[1])/steps*step
+		# 	joint_2_3_state = current_joint_states[2] + (joints_v[2] - current_joint_states[2])/steps*step
+		# 	joint_states.position = [float(joint_0_1_state), float(joint_1_2_state), float(joint_2_3_state)]
 	
-			# 
-			# 
-			# 
-
-			# 
-			# 
-			# 
-
+			 
+			 
+			 
+			 
+		
 			self.joint_pub.publish(joint_states)
 			sleep(sample_time)
 
@@ -223,19 +228,23 @@ class Jint(Node):
 # 		T = T @ T_matrix
 # 	xyz_pose = [T[0][3], T[1][3], T[2][3]]
 # 	return xyz_pose
-	def find_joint_states(self, point):
-		x = point[0]
-		y = point[1]
-		z = point[2] - self.base_height
-		a = self.length_1_2
-		d = self.length_2_tool
-		dist = sqrt(x*x + y*y + z*z)
-		gamma = acos((a*a + d*d - dist*dist)/(2*a*d))
-		joint_2_3 = -(pi - gamma)
-		alpha = asin(d*sin(gamma)/dist)
-		joint_1_2 = alpha + atan(z/sqrt(x*x + y*y))
-		joint_0_1 = atan(y/x)
-		return [joint_0_1, joint_1_2, joint_2_3]
+
+
+# na lab5
+	# def find_joint_states(self, point):
+	# 	x = point[0]
+	# 	y = point[1]
+	# 	z = point[2] - self.base_height
+	# 	a = self.length_1_2
+	# 	d = self.length_2_tool
+	# 	dist = sqrt(x*x + y*y + z*z)
+	# 	gamma = acos((a*a + d*d - dist*dist)/(2*a*d))
+	# 	# print(f'gamma: {gamma}')
+	# 	joint_2_3 = pi - gamma
+	# 	alpha = asin(d*sin(gamma)/dist)
+	# 	joint_1_2 = -(alpha + atan(z/sqrt(x*x + y*y)))
+	# 	joint_0_1 = atan(y/x)
+	# 	return [joint_0_1, joint_1_2, joint_2_3]
 
 
 
