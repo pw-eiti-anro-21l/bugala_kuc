@@ -20,6 +20,7 @@ class Oint(Node):
 		self.joint_sub = self.create_subscription(JointState, 'joint_states', self.listener_callback, 10)
 		self.joint_pub = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
 		self.initial_position = [.7, 0., .4]
+		self.spawn_position = [.653, 0., .985]
 		self.initial_joints_states = [0., -.935, 0.]
 
 	def listener_callback(self, msg):
@@ -60,6 +61,11 @@ class Oint(Node):
 		b_steps = floor(request.time/sample_time*(b/perim))
 		pos_x = self.initial_position[0]
 
+		# self.initial_position = [self.initial_position[0],self.initial_position[1]-a/2,self.initial_position[2]-b/2]
+		# self.linear_ip(self.initial_position, )
+
+
+
 		marker = Marker()
 		markers = MarkerArray()
 		marker.type = 2
@@ -72,6 +78,20 @@ class Oint(Node):
 		marker.color.g = 0.0
 		marker.color.b = 1.0
 		marker.header.frame_id = "/base"
+
+
+		self.initial_position = [.7, -a/2., .4]
+
+		for step in range(1,int((steps+1)/2)):
+			pos_y = self.spawn_position[1] -(self.spawn_position[1]-self.initial_position[1] + (a/2))*step/steps
+			pos_z = self.spawn_position[2] -(self.spawn_position[2]-self.initial_position[1] + (b/2))*step/steps
+
+			pose.header.frame_id = "base"
+			pose.pose.position.x = pos_x
+			pose.pose.position.y = pos_y
+			pose.pose.position.z = pos_z
+			sleep(sample_time/2)
+			self.pose_pub.publish(pose)		
 
 		for i in range(4):
 			current_position = self.initial_position
@@ -113,6 +133,7 @@ class Oint(Node):
 
 			self.initial_position = [pos_x, pos_y, pos_z]
 
+
 	def draw_ellipse(self, request):
 		sample_time = 0.01
 		steps = floor(request.time/sample_time)
@@ -135,9 +156,27 @@ class Oint(Node):
 		marker.color.g = 0.0
 		marker.color.b = 1.0
 		marker.header.frame_id = "/base"
+
+		self.initial_position = [.7, 0, .4]
+
+		for step in range(1,int((steps+1)/2)):
+			pos_y = self.initial_position[1]+a*step/steps
+			pos_z = self.spawn_position[2] -(self.spawn_position[2]-self.initial_position[2])*step/steps
+			pose.header.frame_id = "base"
+			pose.pose.position.x = pos_x
+			pose.pose.position.y = pos_y
+			pose.pose.position.z = pos_z
+			sleep(sample_time/2)
+			self.pose_pub.publish(pose)
+			
+			
+
+
+
 				
 		for step in range(1, steps+1):	
-			pos_y = current_position[1] + a*cos(2*pi*step*steps)
+			current_position = self.initial_position
+			pos_y = current_position[1] + a*cos(2*pi*step/steps)
 			pos_z = current_position[2] + b*sin(2*pi*step/steps)
 
 			pose.header.frame_id = "base"

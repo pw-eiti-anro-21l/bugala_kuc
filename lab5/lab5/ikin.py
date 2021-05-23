@@ -42,7 +42,10 @@ class Ikin(Node):
 		a = self.length_1_2
 		d = self.length_2_tool
 		dist = sqrt(x*x + y*y + z*z)
-		gamma = acos((a*a + d*d - dist*dist)/(2*a*d))
+		if (dist<1.1):
+			gamma = acos((a*a + d*d - dist*dist)/(2*a*d))
+		else: 
+			gamma = pi
 		joint_2_3 = pi - gamma
 		alpha = asin(d*sin(gamma)/dist)
 		joint_1_2 = -(alpha + atan2(z,sqrt(x*x + y*y)))
@@ -52,7 +55,7 @@ class Ikin(Node):
 			self.get_logger().info("Error! Joint base->1 out of range.")
 		elif (abs(joint_1_2+0.935)>0.635):
 			self.get_logger().info("Error! Joint 1->2 out of range.")
-		elif (abs(joint_2_3)>1.57):
+		elif (abs(joint_2_3)>2):
 			self.get_logger().info("Error! Joint 2->3 out of range.")
 		else:
 			joint_states.position = [float(joint_0_1), float(joint_1_2), float(joint_2_3)]
