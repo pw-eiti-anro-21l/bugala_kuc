@@ -19,8 +19,8 @@ class Oint(Node):
 		self.pose_pub = self.create_publisher(PoseStamped, '/ikin_pose', qos_profile)
 		self.joint_sub = self.create_subscription(JointState, 'joint_states', self.listener_callback, 10)
 		self.joint_pub = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
-		self.initial_position = [1, 0, 1]
-		self.initial_joints_states = [0, 0, 0]
+		self.initial_position = [0., 0., 0.]
+		self.initial_joints_states = [0., -.935, 0.]
 
 	def listener_callback(self, msg):
 		for i in range(3):
@@ -28,6 +28,7 @@ class Oint(Node):
 
 	def interpolation_callback(self, request, response):
 		pose = PoseStamped()
+		self.initial_position = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
 		ini = self.initial_joints_states
 		self.linear_ip([ini[0], ini[1]-request.a/2, ini[2]-request.b/2], 2)
 

@@ -21,8 +21,8 @@ class Ikin(Node):
 	def __init__(self):
 		super().__init__('ikin')
 		qos_profile = QoSProfile(depth=10)
-		self.joint_pub = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
-		self.pose_sub = self.create_subscription(PoseStamped, 'ikin_pose', self.listener_callback, qos_profile)
+		self.pose_sub = self.create_subscription(PoseStamped, '/ikin_pose', self.listener_callback, qos_profile)
+		self.joint_pub = self.create_publisher(JointState, '/joint_interpolate', qos_profile)
 		# self.base_height = get_params('link_0', 'links_xyz.json')['length']
 		# self.length_1_2 = get_params('link_2', 'links_xyz.json')['length']
 		# self.length_2_tool = get_params('link_3', 'links_xyz.json')['length'] + get_params('link_4', 'links_xyz.json')['length']
@@ -31,7 +31,7 @@ class Ikin(Node):
 		self.length_2_tool = 0.6
 
 	def listener_callback(self, msg):
-		find_joint_states(msg)
+		self.find_joint_states(msg)
 
 	def find_joint_states(self, pose):
 		joint_states = JointState()
@@ -45,8 +45,8 @@ class Ikin(Node):
 		gamma = acos((a*a + d*d - dist*dist)/(2*a*d))
 		joint_2_3 = pi - gamma
 		alpha = asin(d*sin(gamma)/dist)
-		joint_1_2 = alpha + atan2(z/sqrt(x*x + y*y))
-		joint_0_1 = atan2(y/x)
+		joint_1_2 = -(alpha + atan2(z,sqrt(x*x + y*y)))
+		joint_0_1 = atan2(y,x)
 		
 		if (abs(joint_0_1)>3.14):
 			self.get_logger().info("Error! Joint base->1 out of range.")
