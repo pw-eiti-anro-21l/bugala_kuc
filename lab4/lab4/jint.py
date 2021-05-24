@@ -106,7 +106,6 @@ class Jint(Node):
 			self.joint_pub.publish(joint_states)
 			sleep(sample_time)
 
-			self.joint_pub.publish(pose)
 
 		self.initial_position = [current_joint_states[0], current_joint_states[1], current_joint_states[2]]
 
