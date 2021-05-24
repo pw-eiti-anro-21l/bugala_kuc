@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Quaternion
-# from visualization_msgs.msg import Marker, MarkerArray
+from visualization_msgs.msg import Marker, MarkerArray
 from math import cos, sin, floor, pi
 from rclpy.qos import QoSProfile
 from time import sleep

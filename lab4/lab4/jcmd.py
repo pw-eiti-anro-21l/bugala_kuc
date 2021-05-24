@@ -12,30 +12,13 @@ class Jint_client(Node):
 		self.request = Interpolation.Request()
 
 	def send_request(self):
-		try:
-			self.request.joint_0_1_sv = float(sys.argv[1])
-			self.request.joint_1_2_sv = float(sys.argv[2])
-			self.request.joint_2_3_sv = float(sys.argv[3])
-			self.request.time = float(sys.argv[4])
-			self.request.method = sys.argv[5]
-			self.future = self.client.call_async(self.request)
-			print([self.request.joint_0_1_sv, self.request.joint_1_2_sv, self.request.joint_2_3_sv, self.request.time, self.request.method])
-		except:
-			pass
-	#     except ValueError:
-	#         self.req.position_joint1 = -1.
-	#         self.req.position_joint2 = -1.
-	#         self.req.position_joint3 = -1.
-	#         self.req.interpolation_time = -1.
-	#         self.req.method = ""
-	#         self.future = self.client.call_async(self.req)
-	#     except IndexError:
-	#         self.req.position_joint1 = -1.
-	#         self.req.position_joint2 = -1.
-	#         self.req.position_joint3 = -1.
-	#         self.req.interpolation_time = -1.
-	#         self.req.method = ""
-	#         self.future = self.client.call_async(self.req)
+		self.request.joint_0_1_sv = float(sys.argv[1])
+		self.request.joint_1_2_sv = float(sys.argv[2])
+		self.request.joint_2_3_sv = float(sys.argv[3])
+		self.request.time = float(sys.argv[4])
+		self.request.method = sys.argv[5]
+		self.future = self.client.call_async(self.request)
+		print([self.request.joint_0_1_sv, self.request.joint_1_2_sv, self.request.joint_2_3_sv, self.request.time, self.request.method])
 
 
 def main(args=None):

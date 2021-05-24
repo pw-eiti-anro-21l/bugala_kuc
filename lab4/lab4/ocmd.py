@@ -12,34 +12,16 @@ class Oint_client(Node):
 		self.request = oInterpolation.Request()
 
 	def send_request(self):
-		try:
-			self.request.x_sv = float(sys.argv[1])
-			self.request.y_sv = float(sys.argv[2])
-			self.request.z_sv = float(sys.argv[3])
-			self.request.roll_sv = float(sys.argv[4])
-			self.request.pitch_sv = float(sys.argv[5])
-			self.request.yaw_sv = float(sys.argv[6])
-			self.request.time = float(sys.argv[7])
-			self.request.method = sys.argv[8]
-			self.request.version = sys.argv[9]
-			self.future = self.client.call_async(self.request)
-			print[f'{self.request.roll_sv},{self.request.pitch_sv},{self.request.yaw_sv}, {self.request.time}, {self.request.method},{self.request.version}']
-		except:
-			pass
-	#     except ValueError:
-	#         self.req.position_joint1 = -1.
-	#         self.req.position_joint2 = -1.
-	#         self.req.position_joint3 = -1.
-	#         self.req.oInterpolation_time = -1.
-	#         self.req.method = ""
-	#         self.future = self.client.call_async(self.req)
-	#     except IndexError:
-	#         self.req.position_joint1 = -1.
-	#         self.req.position_joint2 = -1.
-	#         self.req.position_joint3 = -1.
-	#         self.req.oInterpolation_time = -1.
-	#         self.req.method = ""
-	#         self.future = self.client.call_async(self.req)
+		self.request.x_sv = float(sys.argv[1])
+		self.request.y_sv = float(sys.argv[2])
+		self.request.z_sv = float(sys.argv[3])
+		self.request.roll_sv = float(sys.argv[4])
+		self.request.pitch_sv = float(sys.argv[5])
+		self.request.yaw_sv = float(sys.argv[6])
+		self.request.time = float(sys.argv[7])
+		self.request.method = sys.argv[8]
+		self.request.version = sys.argv[9]
+		self.future = self.client.call_async(self.request)
 
 def main(args=None):
 	rclpy.init(args=args)

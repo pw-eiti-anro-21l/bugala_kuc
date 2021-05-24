@@ -11,7 +11,7 @@ import mathutils
 
 def get_params(part, filename):
 	path = get_package_share_directory('lab5') + "/" + filename
-	with open(filename, "r") as file:
+	with open(path, "r") as file:
 		read_file = json.load(file)
 	part_params = read_file[part]
 	return part_params
@@ -23,12 +23,9 @@ class Ikin(Node):
 		qos_profile = QoSProfile(depth=10)
 		self.pose_sub = self.create_subscription(PoseStamped, '/ikin_pose', self.listener_callback, qos_profile)
 		self.joint_pub = self.create_publisher(JointState, '/joint_interpolate', qos_profile)
-		# self.base_height = get_params('link_0', 'links_xyz.json')['length']
-		# self.length_1_2 = get_params('link_2', 'links_xyz.json')['length']
-		# self.length_2_tool = get_params('link_3', 'links_xyz.json')['length'] + get_params('link_4', 'links_xyz.json')['length']
-		self.base_height = 0.1
-		self.length_1_2 = 0.5
-		self.length_2_tool = 0.6
+		self.base_height = float(get_params('link_0', 'links_xyz.json')['length'])
+		self.length_1_2 = float(get_params('link_2', 'links_xyz.json')['length'])
+		self.length_2_tool = float(get_params('link_3', 'links_xyz.json')['length']) + float(get_params('link_4', 'links_xyz.json')['length'])
 
 	def listener_callback(self, msg):
 		self.find_joint_states(msg)

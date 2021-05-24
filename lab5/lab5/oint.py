@@ -29,9 +29,6 @@ class Oint(Node):
 
 	def interpolation_callback(self, request, response):
 		pose = PoseStamped()
-		# self.initial_position = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
-		# ini = self.initial_position
-		# self.linear_ip([ini[0], ini[1]-request.a/2, ini[2]-request.b/2], 2)
 
 		if request.time > 0:
 
@@ -46,7 +43,7 @@ class Oint(Node):
 			else:
 				response.output == "This method does not exist."
 		else:
-			response.output = "Error! Value of time is invalid."
+			response.output = "Error! Wrong time value."
 
 		return response
 
@@ -60,10 +57,6 @@ class Oint(Node):
 		a_steps = floor(request.time/sample_time*(a/perim))
 		b_steps = floor(request.time/sample_time*(b/perim))
 		pos_x = self.initial_position[0]
-
-		# self.initial_position = [self.initial_position[0],self.initial_position[1]-a/2,self.initial_position[2]-b/2]
-		# self.linear_ip(self.initial_position, )
-
 
 
 		marker = Marker()
