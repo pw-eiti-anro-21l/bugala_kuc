@@ -6,8 +6,6 @@ from sensor_msgs.msg import JointState
 from math import cos, sin, atan, atan2, sqrt, acos, asin, pi
 from rclpy.qos import QoSProfile
 import json
-import transformations
-import mathutils
 
 def get_params(part, filename):
 	path = get_package_share_directory('lab5') + "/" + filename
