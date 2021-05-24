@@ -152,7 +152,7 @@ class Oint(Node):
 
 		self.initial_position = [.7, 0, .4]
 
-		for step in range(1,int((steps+1)/2)):
+		for step in range(steps):
 			pos_y = self.initial_position[1]+a*step/steps
 			pos_z = self.spawn_position[2] -(self.spawn_position[2]-self.initial_position[2])*step/steps
 			pose.header.frame_id = "base"
@@ -161,12 +161,7 @@ class Oint(Node):
 			pose.pose.position.z = pos_z
 			sleep(sample_time/2)
 			self.pose_pub.publish(pose)
-			
-			
-
-
-
-				
+							
 		for step in range(1, steps+1):	
 			current_position = self.initial_position
 			pos_y = current_position[1] + a*cos(2*pi*step/steps)
